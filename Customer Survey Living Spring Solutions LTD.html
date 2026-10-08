@@ -43,6 +43,9 @@
   .inline-field { display: inline-flex; align-items: center; gap: 8px; margin-top: 10px; font-size: 13.5px; color: var(--muted); }
   .inline-field input { border: none; border-bottom: 2px solid var(--border); padding: 4px 8px; font-size: 13.5px; font-family: 'Inter', sans-serif; width: 200px; outline: none; background: transparent; }
   .inline-field input:focus { border-bottom-color: var(--blue); }
+  .inline-field.qnote-field { color: #9CA3AF; font-size: 12.5px; font-style: italic; }
+  .inline-field.qnote-field input { width: 260px; font-style: normal; }
+  @media (max-width: 560px) { .inline-field.qnote-field input { width: 100%; margin-top: 4px; } .inline-field.qnote-field { flex-wrap: wrap; } }
 
   .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 8px; }
   .detail-field { display: flex; flex-direction: column; gap: 5px; }
@@ -88,6 +91,11 @@
   .summary-card .sq-q { font-size: 13px; color: var(--muted); margin-bottom: 4px; }
   .summary-card .sq-a { font-size: 14px; font-weight: 600; color: var(--blue); }
   .summary-card .sq-a.unanswered { color: #9CA3AF; font-style: italic; font-weight: 400; }
+  .sq-options { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .sq-opt { font-size: 12px; padding: 5px 12px; border-radius: 99px; border: 1.5px solid var(--border); color: var(--muted); background: var(--white); }
+  .sq-opt.picked { border-color: var(--blue); background: linear-gradient(135deg, var(--blue), var(--teal)); color: var(--white); font-weight: 700; box-shadow: 0 2px 8px rgba(27,95,168,0.35); }
+  .sq-note { margin-top: 8px; font-size: 12.5px; color: #6B7280; line-height: 1.5; padding-left: 10px; border-left: 2px solid var(--border); }
+  .sq-note strong { color: #9CA3AF; font-weight: 600; text-transform: uppercase; font-size: 10.5px; letter-spacing: 0.5px; display: block; margin-bottom: 2px; }
 
   .summary-comments { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 18px; margin-bottom: 10px; }
   .summary-comments .sc-label { font-size: 12px; font-weight: 700; color: var(--muted); margin-bottom: 6px; }
@@ -102,35 +110,35 @@
 
   .summary-footer { text-align: center; font-size: 12px; color: var(--muted); padding: 16px 0; line-height: 1.8; border-top: 1px solid var(--border); margin-top: 8px; }
 
-  /* ===== Signature ===== */
-  .sig-box { width: 100%; min-height: 110px; border: 1.5px dashed var(--border); border-radius: 8px; background: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative; transition: border-color .2s, background .2s; overflow: hidden; }
-  .sig-box:hover { border-color: var(--blue); background: var(--blue-light); }
-  .sig-box .sig-placeholder { color: var(--muted); font-size: 14px; display: flex; align-items: center; gap: 8px; }
-  .sig-box img { max-width: 100%; max-height: 140px; display: none; padding: 8px; }
-  .sig-box.signed { border-style: solid; border-color: var(--blue); background: #fff; }
-  .sig-box.signed img { display: block; }
-  .sig-box.signed .sig-placeholder { display: none; }
-  .sig-line-note { font-size: 11px; color: var(--muted); margin-top: 6px; }
-  .sig-modal { position: fixed; inset: 0; background: rgba(15,23,42,0.72); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 16px; }
-  .sig-modal.show { display: flex; }
-  .sig-dialog { background: #fff; border-radius: 14px; width: min(1100px, 100%); height: min(720px, 100%); display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.35); overflow: hidden; }
-  .sig-head { padding: 16px 22px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-  .sig-head h3 { font-size: 18px; font-weight: 700; }
-  .sig-head span { font-size: 12px; color: var(--muted); }
-  .sig-stage { flex: 1; padding: 18px 22px; background: var(--bg); min-height: 0; }
-  .sig-paper { position: relative; width: 100%; height: 100%; background: #fdfdfb; border: 1px solid #cfd4da; border-radius: 8px; box-shadow: inset 0 0 0 1px #fff, 0 1px 4px rgba(0,0,0,0.08); overflow: hidden; }
-  .sig-paper canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
-  .sig-paper .sig-baseline { position: absolute; left: 6%; right: 6%; bottom: 28%; border-bottom: 1px solid #b9c0c9; pointer-events: none; }
-  .sig-paper .sig-x { position: absolute; left: 3%; bottom: calc(28% + 4px); font-size: 22px; color: #9aa3ad; pointer-events: none; font-family: Georgia, serif; }
-  .sig-paper .sig-hint { position: absolute; left: 0; right: 0; bottom: 18%; text-align: center; font-size: 12px; color: #9aa3ad; pointer-events: none; letter-spacing: .5px; }
-  .sig-actions { padding: 14px 22px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
-  .sig-actions .grp { display: flex; gap: 10px; }
-  .sig-btn { font-family: inherit; font-size: 14px; font-weight: 600; padding: 11px 22px; border-radius: 8px; border: 1.5px solid var(--border); background: #fff; color: var(--text); cursor: pointer; }
-  .sig-btn:hover { background: var(--bg); }
-  .sig-btn.primary { background: var(--blue); border-color: var(--blue); color: #fff; }
-  .sig-btn.primary:hover { background: #164d8a; }
-  .sig-btn:disabled { opacity: .5; cursor: not-allowed; }
-  @media (max-width: 560px) { .sig-modal { padding: 0; } .sig-dialog { border-radius: 0; height: 100%; } .sig-stage { padding: 10px; } }
+  /* ── SIGNATURE ── */
+  .sig-box { position: relative; height: 110px; border: 2px dashed var(--border); border-radius: 10px; background: #FCFDFF; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: border-color 0.15s, background 0.15s; overflow: hidden; }
+  .sig-box:hover, .sig-box:focus { border-color: var(--blue); background: var(--blue-light); outline: none; }
+  .sig-box.signed { border-style: solid; border-color: var(--teal); background: #fff; }
+  .sig-placeholder { font-size: 14px; font-weight: 600; color: var(--blue); }
+  .sig-box img { max-height: 90px; max-width: 90%; object-fit: contain; }
+  .sig-resign { position: absolute; right: 10px; bottom: 6px; font-size: 11px; color: var(--muted); display: none; }
+  .sig-box.signed .sig-resign { display: block; }
+
+  #sig-modal { position: fixed; inset: 0; z-index: 1000; background: #fff; display: none; flex-direction: column; }
+  #sig-modal.open { display: flex; }
+  .sig-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 18px; border-bottom: 1px solid #E5E7EB; background: #fff; }
+  .sig-bar h3 { font-size: 15px; font-weight: 700; color: var(--text); }
+  .sig-bar .sig-actions { display: flex; gap: 8px; }
+  .sig-btn { border: 2px solid var(--border); background: #fff; color: var(--text); border-radius: 8px; padding: 8px 16px; font-size: 13.5px; font-weight: 600; font-family: 'Inter', sans-serif; cursor: pointer; }
+  .sig-btn:hover { border-color: var(--blue); color: var(--blue); }
+  .sig-btn.primary { background: linear-gradient(135deg, var(--blue), var(--teal)); border-color: transparent; color: #fff; }
+  .sig-stage { position: relative; flex: 1; background: #fff; }
+  #sig-canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
+  .sig-line { position: absolute; left: 6%; right: 6%; bottom: 28%; border-bottom: 1.5px solid #D1D5DB; pointer-events: none; }
+  .sig-line span { position: absolute; left: 0; bottom: -22px; font-size: 11.5px; color: #9CA3AF; letter-spacing: 0.4px; }
+  .sig-hint { position: absolute; top: 18px; left: 0; right: 0; text-align: center; font-size: 13px; color: #B8BFC9; pointer-events: none; }
+
+  .summary-header .sh-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--blue); margin-bottom: 14px; }
+  .summary-header .sh-label { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
+  .summary-header .sh-name { font-size: 30px; font-weight: 800; color: var(--text); letter-spacing: -0.6px; line-height: 1.2; margin: 4px 0 12px; word-break: break-word; }
+  .sq-a:empty { display: none; }
+  .sq-opt.picked { padding: 6px 15px; }
+  .sp-sig img { max-height: 90px; max-width: 100%; display: block; margin-top: 4px; }
 
   @media print {
     body { background: white; padding: 0; }
@@ -171,49 +179,49 @@
 <div class="form-wrap" id="survey-form">
 
   <div class="section-label">Section A — Visit Frequency &amp; Staff</div>
-  <div class="q-card" data-q="1"><div class="q-number">Question 1</div><div class="q-text">How many visits do you generally expect to receive from our staff in a week?</div><div class="options"><button class="opt-btn" data-q="1" data-val="1 or 2">1 or 2</button><button class="opt-btn" data-q="1" data-val="3 to 5">3 to 5</button><button class="opt-btn" data-q="1" data-val="6 or 7">6 or 7</button><button class="opt-btn" data-q="1" data-val="8 to 10">8 to 10</button><button class="opt-btn" data-q="1" data-val="More than 10">More than 10</button></div></div>
-  <div class="q-card" data-q="2"><div class="q-number">Question 2</div><div class="q-text">Do you have regular care workers?</div><div class="options"><button class="opt-btn" data-q="2" data-val="Yes">Yes</button><button class="opt-btn" data-q="2" data-val="No">No</button></div></div>
-  <div class="q-card" data-q="3"><div class="q-number">Question 3</div><div class="q-text">How often do you get care workers that you DO NOT know?</div><div class="options"><button class="opt-btn" data-q="3" data-val="Always">Always</button><button class="opt-btn" data-q="3" data-val="Regularly">Regularly</button><button class="opt-btn" data-q="3" data-val="Quite often">Quite often</button><button class="opt-btn" data-q="3" data-val="Hardly ever">Hardly ever</button><button class="opt-btn" data-q="3" data-val="Never">Never</button></div></div>
-  <div class="q-card" data-q="4"><div class="q-number">Question 4</div><div class="q-text">Does/do your care worker(s) arrive within 15 minutes of the specified time?</div><div class="options"><button class="opt-btn" data-q="4" data-val="Always">Always</button><button class="opt-btn" data-q="4" data-val="Usually">Usually</button><button class="opt-btn" data-q="4" data-val="Sometimes">Sometimes</button><button class="opt-btn" data-q="4" data-val="Never">Never</button></div></div>
-  <div class="q-card" data-q="5"><div class="q-number">Question 5</div><div class="q-text">Have we ever missed a care visit in the last 3 months?</div><div class="options"><button class="opt-btn" data-q="5" data-val="No">No</button><button class="opt-btn" data-q="5" data-val="Yes, on one occasion">Yes, on one occasion</button><button class="opt-btn" data-q="5" data-val="Yes, on more than one occasion">Yes, on more than one occasion</button></div></div>
+  <div class="q-card" data-q="1"><div class="q-number">Question 1</div><div class="q-text">How many visits do you generally expect to receive from our staff in a week?</div><div class="options"><button class="opt-btn" data-q="1" data-val="1 or 2">1 or 2</button><button class="opt-btn" data-q="1" data-val="3 to 5">3 to 5</button><button class="opt-btn" data-q="1" data-val="6 or 7">6 or 7</button><button class="opt-btn" data-q="1" data-val="8 to 10">8 to 10</button><button class="opt-btn" data-q="1" data-val="More than 10">More than 10</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="1" placeholder="Optional comment"></div></div>
+  <div class="q-card" data-q="2"><div class="q-number">Question 2</div><div class="q-text">Do you have regular care workers?</div><div class="options"><button class="opt-btn" data-q="2" data-val="Yes">Yes</button><button class="opt-btn" data-q="2" data-val="No">No</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="2" placeholder="Optional comment"></div></div>
+  <div class="q-card" data-q="3"><div class="q-number">Question 3</div><div class="q-text">How often do you get care workers that you DO NOT know?</div><div class="options"><button class="opt-btn" data-q="3" data-val="Always">Always</button><button class="opt-btn" data-q="3" data-val="Regularly">Regularly</button><button class="opt-btn" data-q="3" data-val="Quite often">Quite often</button><button class="opt-btn" data-q="3" data-val="Hardly ever">Hardly ever</button><button class="opt-btn" data-q="3" data-val="Never">Never</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="3" placeholder="Optional comment"></div></div>
+  <div class="q-card" data-q="4"><div class="q-number">Question 4</div><div class="q-text">Does/do your care worker(s) arrive within 15 minutes of the specified time?</div><div class="options"><button class="opt-btn" data-q="4" data-val="Always">Always</button><button class="opt-btn" data-q="4" data-val="Usually">Usually</button><button class="opt-btn" data-q="4" data-val="Sometimes">Sometimes</button><button class="opt-btn" data-q="4" data-val="Never">Never</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="4" placeholder="Optional comment"></div></div>
+  <div class="q-card" data-q="5"><div class="q-number">Question 5</div><div class="q-text">Have we ever missed a care visit in the last 3 months?</div><div class="options"><button class="opt-btn" data-q="5" data-val="No">No</button><button class="opt-btn" data-q="5" data-val="Yes, on one occasion">Yes, on one occasion</button><button class="opt-btn" data-q="5" data-val="Yes, on more than one occasion">Yes, on more than one occasion</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="5" placeholder="Optional comment"></div></div>
 
   <div class="section-label">Section B — Quality of Care</div>
-  <div class="q-card" data-q="6"><div class="q-number">Question 6</div><div class="q-text">Do the care workers provide all of the care they are meant to?</div><div class="options"><button class="opt-btn" data-q="6" data-val="Always">Always</button><button class="opt-btn" data-q="6" data-val="Usually">Usually</button><button class="opt-btn" data-q="6" data-val="Sometimes">Sometimes</button><button class="opt-btn" data-q="6" data-val="Never">Never</button></div></div>
-  <div class="q-card" data-q="7"><div class="q-number">Question 7</div><div class="q-text">Are your care workers polite and respectful?</div><div class="options"><button class="opt-btn" data-q="7" data-val="Always">Always</button><button class="opt-btn" data-q="7" data-val="Usually">Usually</button><button class="opt-btn" data-q="7" data-val="Sometimes">Sometimes</button><button class="opt-btn" data-q="7" data-val="Never">Never</button></div><div class="inline-field">Please state name of care worker: <input type="text" id="q7-name" placeholder="Care worker name (if applicable)"></div></div>
-  <div class="q-card" data-q="8"><div class="q-number">Question 8</div><div class="q-text">How competent do you think your care workers are?</div><div class="options"><button class="opt-btn" data-q="8" data-val="Very competent">Very competent</button><button class="opt-btn" data-q="8" data-val="Competent">Competent</button><button class="opt-btn" data-q="8" data-val="Incompetent">Incompetent</button><button class="opt-btn" data-q="8" data-val="Very incompetent">Very incompetent</button></div></div>
-  <div class="q-card" data-q="9"><div class="q-number">Question 9</div><div class="q-text">How caring did you think the care workers are?</div><div class="options"><button class="opt-btn" data-q="9" data-val="Very Caring">Very Caring</button><button class="opt-btn" data-q="9" data-val="Caring">Caring</button><button class="opt-btn" data-q="9" data-val="Uncaring">Uncaring</button><button class="opt-btn" data-q="9" data-val="Very Uncaring">Very Uncaring</button></div></div>
-  <div class="q-card" data-q="10"><div class="q-number">Question 10</div><div class="q-text">Do the care worker(s) seem to have enough time to provide the care you require?</div><div class="options"><button class="opt-btn" data-q="10" data-val="Always">Always</button><button class="opt-btn" data-q="10" data-val="Usually">Usually</button><button class="opt-btn" data-q="10" data-val="Sometimes">Sometimes</button><button class="opt-btn" data-q="10" data-val="Never">Never</button></div></div>
+  <div class="q-card" data-q="6"><div class="q-number">Question 6</div><div class="q-text">Do the care workers provide all of the care they are meant to?</div><div class="options"><button class="opt-btn" data-q="6" data-val="Always">Always</button><button class="opt-btn" data-q="6" data-val="Usually">Usually</button><button class="opt-btn" data-q="6" data-val="Sometimes">Sometimes</button><button class="opt-btn" data-q="6" data-val="Never">Never</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="6" placeholder="Optional comment"></div></div>
+  <div class="q-card" data-q="7"><div class="q-number">Question 7</div><div class="q-text">Are your care workers polite and respectful?</div><div class="options"><button class="opt-btn" data-q="7" data-val="Always">Always</button><button class="opt-btn" data-q="7" data-val="Usually">Usually</button><button class="opt-btn" data-q="7" data-val="Sometimes">Sometimes</button><button class="opt-btn" data-q="7" data-val="Never">Never</button></div><div class="inline-field">Please state name of care worker: <input type="text" id="q7-name" placeholder="Care worker name (if applicable)"></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="7" placeholder="Optional comment"></div></div>
+  <div class="q-card" data-q="8"><div class="q-number">Question 8</div><div class="q-text">How competent do you think your care workers are?</div><div class="options"><button class="opt-btn" data-q="8" data-val="Very competent">Very competent</button><button class="opt-btn" data-q="8" data-val="Competent">Competent</button><button class="opt-btn" data-q="8" data-val="Incompetent">Incompetent</button><button class="opt-btn" data-q="8" data-val="Very incompetent">Very incompetent</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="8" placeholder="Optional comment"></div></div>
+  <div class="q-card" data-q="9"><div class="q-number">Question 9</div><div class="q-text">How caring did you think the care workers are?</div><div class="options"><button class="opt-btn" data-q="9" data-val="Very Caring">Very Caring</button><button class="opt-btn" data-q="9" data-val="Caring">Caring</button><button class="opt-btn" data-q="9" data-val="Uncaring">Uncaring</button><button class="opt-btn" data-q="9" data-val="Very Uncaring">Very Uncaring</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="9" placeholder="Optional comment"></div></div>
+  <div class="q-card" data-q="10"><div class="q-number">Question 10</div><div class="q-text">Do the care worker(s) seem to have enough time to provide the care you require?</div><div class="options"><button class="opt-btn" data-q="10" data-val="Always">Always</button><button class="opt-btn" data-q="10" data-val="Usually">Usually</button><button class="opt-btn" data-q="10" data-val="Sometimes">Sometimes</button><button class="opt-btn" data-q="10" data-val="Never">Never</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="10" placeholder="Optional comment"></div></div>
 
   <div class="section-label">Section C — Professionalism</div>
-  <div class="q-card" data-q="11"><div class="q-number">Question 11</div><div class="q-text">Do the care workers introduce themselves to you?</div><div class="options"><button class="opt-btn" data-q="11" data-val="Always">Always</button><button class="opt-btn" data-q="11" data-val="Usually">Usually</button><button class="opt-btn" data-q="11" data-val="Sometimes">Sometimes</button><button class="opt-btn" data-q="11" data-val="Never">Never</button></div></div>
-  <div class="q-card" data-q="12"><div class="q-number">Question 12</div><div class="q-text">Do the care workers show you their Identification Badge when they first meet you?</div><div class="options"><button class="opt-btn" data-q="12" data-val="Always">Always</button><button class="opt-btn" data-q="12" data-val="Usually">Usually</button><button class="opt-btn" data-q="12" data-val="Sometimes">Sometimes</button><button class="opt-btn" data-q="12" data-val="Never">Never</button></div></div>
-  <div class="q-card" data-q="13"><div class="q-number">Question 13</div><div class="q-text">Are the care worker(s) suitably dressed?</div><div class="options"><button class="opt-btn" data-q="13" data-val="Always">Always</button><button class="opt-btn" data-q="13" data-val="Usually">Usually</button><button class="opt-btn" data-q="13" data-val="Sometimes">Sometimes</button><button class="opt-btn" data-q="13" data-val="Never">Never</button></div></div>
-  <div class="q-card" data-q="14"><div class="q-number">Question 14</div><div class="q-text">Do the care workers wear a uniform?</div><div class="options"><button class="opt-btn" data-q="14" data-val="Always">Always</button><button class="opt-btn" data-q="14" data-val="Usually">Usually</button><button class="opt-btn" data-q="14" data-val="Sometimes">Sometimes</button><button class="opt-btn" data-q="14" data-val="Never">Never</button></div></div>
-  <div class="q-card" data-q="15"><div class="q-number">Question 15</div><div class="q-text">Would you prefer care workers to wear a uniform or ordinary clothing when caring for you at home?</div><div class="options"><button class="opt-btn" data-q="15" data-val="Uniform">Uniform</button><button class="opt-btn" data-q="15" data-val="Ordinary Clothes">Ordinary Clothes</button></div></div>
+  <div class="q-card" data-q="11"><div class="q-number">Question 11</div><div class="q-text">Do the care workers introduce themselves to you?</div><div class="options"><button class="opt-btn" data-q="11" data-val="Always">Always</button><button class="opt-btn" data-q="11" data-val="Usually">Usually</button><button class="opt-btn" data-q="11" data-val="Sometimes">Sometimes</button><button class="opt-btn" data-q="11" data-val="Never">Never</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="11" placeholder="Optional comment"></div></div>
+  <div class="q-card" data-q="12"><div class="q-number">Question 12</div><div class="q-text">Do the care workers show you their Identification Badge when they first meet you?</div><div class="options"><button class="opt-btn" data-q="12" data-val="Always">Always</button><button class="opt-btn" data-q="12" data-val="Usually">Usually</button><button class="opt-btn" data-q="12" data-val="Sometimes">Sometimes</button><button class="opt-btn" data-q="12" data-val="Never">Never</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="12" placeholder="Optional comment"></div></div>
+  <div class="q-card" data-q="13"><div class="q-number">Question 13</div><div class="q-text">Are the care worker(s) suitably dressed?</div><div class="options"><button class="opt-btn" data-q="13" data-val="Always">Always</button><button class="opt-btn" data-q="13" data-val="Usually">Usually</button><button class="opt-btn" data-q="13" data-val="Sometimes">Sometimes</button><button class="opt-btn" data-q="13" data-val="Never">Never</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="13" placeholder="Optional comment"></div></div>
+  <div class="q-card" data-q="14"><div class="q-number">Question 14</div><div class="q-text">Do the care workers wear a uniform?</div><div class="options"><button class="opt-btn" data-q="14" data-val="Always">Always</button><button class="opt-btn" data-q="14" data-val="Usually">Usually</button><button class="opt-btn" data-q="14" data-val="Sometimes">Sometimes</button><button class="opt-btn" data-q="14" data-val="Never">Never</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="14" placeholder="Optional comment"></div></div>
+  <div class="q-card" data-q="15"><div class="q-number">Question 15</div><div class="q-text">Would you prefer care workers to wear a uniform or ordinary clothing when caring for you at home?</div><div class="options"><button class="opt-btn" data-q="15" data-val="Uniform">Uniform</button><button class="opt-btn" data-q="15" data-val="Ordinary Clothes">Ordinary Clothes</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="15" placeholder="Optional comment"></div></div>
 
   <div class="section-label">Section D — Time &amp; Communication</div>
-  <div class="q-card" data-q="16"><div class="q-number">Question 16</div><div class="q-text">Do the care workers stay as long as you expect them to?</div><div class="options"><button class="opt-btn" data-q="16" data-val="Yes">Yes</button><button class="opt-btn" data-q="16" data-val="No">No</button></div></div>
-  <div class="q-card" data-q="17"><div class="q-number">Question 17</div><div class="q-text">Do you feel that the care workers have enough time to meet your needs properly?</div><div class="options"><button class="opt-btn" data-q="17" data-val="Always">Always</button><button class="opt-btn" data-q="17" data-val="Usually">Usually</button><button class="opt-btn" data-q="17" data-val="Sometimes">Sometimes</button><button class="opt-btn" data-q="17" data-val="Never">Never</button></div></div>
-  <div class="q-card" data-q="18"><div class="q-number">Question 18</div><div class="q-text">Do the care workers explain to you why they are there?</div><div class="options"><button class="opt-btn" data-q="18" data-val="Always">Always</button><button class="opt-btn" data-q="18" data-val="Usually">Usually</button><button class="opt-btn" data-q="18" data-val="Sometimes">Sometimes</button><button class="opt-btn" data-q="18" data-val="Never">Never</button></div></div>
-  <div class="q-card" data-q="19"><div class="q-number">Question 19</div><div class="q-text">Do the care workers explain to you what they are expected to do?</div><div class="options"><button class="opt-btn" data-q="19" data-val="Always">Always</button><button class="opt-btn" data-q="19" data-val="Usually">Usually</button><button class="opt-btn" data-q="19" data-val="Sometimes">Sometimes</button><button class="opt-btn" data-q="19" data-val="Never">Never</button></div></div>
-  <div class="q-card" data-q="20"><div class="q-number">Question 20</div><div class="q-text">Do you feel as if the care workers are in a hurry to finish during your care visit?</div><div class="options"><button class="opt-btn" data-q="20" data-val="Always">Always</button><button class="opt-btn" data-q="20" data-val="Usually">Usually</button><button class="opt-btn" data-q="20" data-val="Sometimes">Sometimes</button><button class="opt-btn" data-q="20" data-val="Never">Never</button></div></div>
+  <div class="q-card" data-q="16"><div class="q-number">Question 16</div><div class="q-text">Do the care workers stay as long as you expect them to?</div><div class="options"><button class="opt-btn" data-q="16" data-val="Yes">Yes</button><button class="opt-btn" data-q="16" data-val="No">No</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="16" placeholder="Optional comment"></div></div>
+  <div class="q-card" data-q="17"><div class="q-number">Question 17</div><div class="q-text">Do you feel that the care workers have enough time to meet your needs properly?</div><div class="options"><button class="opt-btn" data-q="17" data-val="Always">Always</button><button class="opt-btn" data-q="17" data-val="Usually">Usually</button><button class="opt-btn" data-q="17" data-val="Sometimes">Sometimes</button><button class="opt-btn" data-q="17" data-val="Never">Never</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="17" placeholder="Optional comment"></div></div>
+  <div class="q-card" data-q="18"><div class="q-number">Question 18</div><div class="q-text">Do the care workers explain to you why they are there?</div><div class="options"><button class="opt-btn" data-q="18" data-val="Always">Always</button><button class="opt-btn" data-q="18" data-val="Usually">Usually</button><button class="opt-btn" data-q="18" data-val="Sometimes">Sometimes</button><button class="opt-btn" data-q="18" data-val="Never">Never</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="18" placeholder="Optional comment"></div></div>
+  <div class="q-card" data-q="19"><div class="q-number">Question 19</div><div class="q-text">Do the care workers explain to you what they are expected to do?</div><div class="options"><button class="opt-btn" data-q="19" data-val="Always">Always</button><button class="opt-btn" data-q="19" data-val="Usually">Usually</button><button class="opt-btn" data-q="19" data-val="Sometimes">Sometimes</button><button class="opt-btn" data-q="19" data-val="Never">Never</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="19" placeholder="Optional comment"></div></div>
+  <div class="q-card" data-q="20"><div class="q-number">Question 20</div><div class="q-text">Do you feel as if the care workers are in a hurry to finish during your care visit?</div><div class="options"><button class="opt-btn" data-q="20" data-val="Always">Always</button><button class="opt-btn" data-q="20" data-val="Usually">Usually</button><button class="opt-btn" data-q="20" data-val="Sometimes">Sometimes</button><button class="opt-btn" data-q="20" data-val="Never">Never</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="20" placeholder="Optional comment"></div></div>
 
   <div class="section-label">Section E — Information &amp; Contact</div>
-  <div class="q-card" data-q="21"><div class="q-number">Question 21</div><div class="q-text">Had anybody explained to you that Living Spring Solutions would be providing your care?</div><div class="options"><button class="opt-btn" data-q="21" data-val="Yes, my Social Worker explained that to me">Yes, my Social Worker explained</button><button class="opt-btn" data-q="21" data-val="Yes, somebody else explained it to me">Yes, somebody else explained</button><button class="opt-btn" data-q="21" data-val="No one explained it to me">No one explained it to me</button></div></div>
-  <div class="q-card" data-q="22"><div class="q-number">Question 22</div><div class="q-text">Do you understand how to contact us if you have any problem(s)?</div><div class="options"><button class="opt-btn" data-q="22" data-val="Yes">Yes</button><button class="opt-btn" data-q="22" data-val="No">No</button></div></div>
-  <div class="q-card" data-q="23"><div class="q-number">Question 23</div><div class="q-text">Do you understand how to contact Living Spring Solutions when the office is closed?</div><div class="options"><button class="opt-btn" data-q="23" data-val="Yes">Yes</button><button class="opt-btn" data-q="23" data-val="No">No</button></div></div>
-  <div class="q-card" data-q="24"><div class="q-number">Question 24</div><div class="q-text">Do you have an information pack / folder about Living Spring Solutions in your home?</div><div class="options"><button class="opt-btn" data-q="24" data-val="Yes">Yes</button><button class="opt-btn" data-q="24" data-val="No">No</button></div></div>
+  <div class="q-card" data-q="21"><div class="q-number">Question 21</div><div class="q-text">Had anybody explained to you that Living Spring Solutions would be providing your care?</div><div class="options"><button class="opt-btn" data-q="21" data-val="Yes, my Social Worker explained that to me">Yes, my Social Worker explained</button><button class="opt-btn" data-q="21" data-val="Yes, somebody else explained it to me">Yes, somebody else explained</button><button class="opt-btn" data-q="21" data-val="No one explained it to me">No one explained it to me</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="21" placeholder="Optional comment"></div></div>
+  <div class="q-card" data-q="22"><div class="q-number">Question 22</div><div class="q-text">Do you understand how to contact us if you have any problem(s)?</div><div class="options"><button class="opt-btn" data-q="22" data-val="Yes">Yes</button><button class="opt-btn" data-q="22" data-val="No">No</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="22" placeholder="Optional comment"></div></div>
+  <div class="q-card" data-q="23"><div class="q-number">Question 23</div><div class="q-text">Do you understand how to contact Living Spring Solutions when the office is closed?</div><div class="options"><button class="opt-btn" data-q="23" data-val="Yes">Yes</button><button class="opt-btn" data-q="23" data-val="No">No</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="23" placeholder="Optional comment"></div></div>
+  <div class="q-card" data-q="24"><div class="q-number">Question 24</div><div class="q-text">Do you have an information pack / folder about Living Spring Solutions in your home?</div><div class="options"><button class="opt-btn" data-q="24" data-val="Yes">Yes</button><button class="opt-btn" data-q="24" data-val="No">No</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="24" placeholder="Optional comment"></div></div>
 
   <div class="section-label">Section F — Helpfulness &amp; Satisfaction</div>
-  <div class="q-card" data-q="25"><div class="q-number">Question 25</div><div class="q-text">Do you find office staff helpful when you contact them?</div><div class="options"><button class="opt-btn" data-q="25" data-val="Yes, they seem very helpful">Yes, very helpful</button><button class="opt-btn" data-q="25" data-val="Yes, they seem fairly helpful">Yes, fairly helpful</button><button class="opt-btn" data-q="25" data-val="No, they are not helpful">No, not helpful</button><button class="opt-btn" data-q="25" data-val="No, they seem very unhelpful">No, very unhelpful</button><button class="opt-btn" data-q="25" data-val="I have never contacted the Agency">Never contacted the agency</button></div></div>
-  <div class="q-card" data-q="26"><div class="q-number">Question 26</div><div class="q-text">How helpful do you find your care worker(s)?</div><div class="options"><button class="opt-btn" data-q="26" data-val="Very helpful">Very helpful</button><button class="opt-btn" data-q="26" data-val="Quite helpful">Quite helpful</button><button class="opt-btn" data-q="26" data-val="Not helpful">Not helpful</button><button class="opt-btn" data-q="26" data-val="Very unhelpful">Very unhelpful</button></div></div>
-  <div class="q-card" data-q="27"><div class="q-number">Question 27</div><div class="q-text">Do you think your care workers are generally polite and courteous or somewhat rude and ill-mannered?</div><div class="options"><button class="opt-btn" data-q="27" data-val="Very polite and courteous">Very polite and courteous</button><button class="opt-btn" data-q="27" data-val="Polite and courteous">Polite and courteous</button><button class="opt-btn" data-q="27" data-val="Rude and ill-mannered">Rude and ill-mannered</button><button class="opt-btn" data-q="27" data-val="Very rude and ill-mannered">Very rude and ill-mannered</button></div></div>
-  <div class="q-card" data-q="28"><div class="q-number">Question 28</div><div class="q-text">How many different care workers do we normally send you in a week?</div><div class="options"><button class="opt-btn" data-q="28" data-val="One">One</button><button class="opt-btn" data-q="28" data-val="Two">Two</button><button class="opt-btn" data-q="28" data-val="Three">Three</button><button class="opt-btn" data-q="28" data-val="Four">Four</button><button class="opt-btn" data-q="28" data-val="More than 4">More than 4</button></div></div>
-  <div class="q-card" data-q="29"><div class="q-number">Question 29</div><div class="q-text">Overall, how satisfied are you with the care that you receive from us?</div><div class="options"><button class="opt-btn" data-q="29" data-val="Very Satisfied">Very Satisfied</button><button class="opt-btn" data-q="29" data-val="Satisfied">Satisfied</button><button class="opt-btn" data-q="29" data-val="Less than satisfied">Less than satisfied</button><button class="opt-btn" data-q="29" data-val="Very Dissatisfied">Very Dissatisfied</button></div></div>
+  <div class="q-card" data-q="25"><div class="q-number">Question 25</div><div class="q-text">Do you find office staff helpful when you contact them?</div><div class="options"><button class="opt-btn" data-q="25" data-val="Yes, they seem very helpful">Yes, very helpful</button><button class="opt-btn" data-q="25" data-val="Yes, they seem fairly helpful">Yes, fairly helpful</button><button class="opt-btn" data-q="25" data-val="No, they are not helpful">No, not helpful</button><button class="opt-btn" data-q="25" data-val="No, they seem very unhelpful">No, very unhelpful</button><button class="opt-btn" data-q="25" data-val="I have never contacted the Agency">Never contacted the agency</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="25" placeholder="Optional comment"></div></div>
+  <div class="q-card" data-q="26"><div class="q-number">Question 26</div><div class="q-text">How helpful do you find your care worker(s)?</div><div class="options"><button class="opt-btn" data-q="26" data-val="Very helpful">Very helpful</button><button class="opt-btn" data-q="26" data-val="Quite helpful">Quite helpful</button><button class="opt-btn" data-q="26" data-val="Not helpful">Not helpful</button><button class="opt-btn" data-q="26" data-val="Very unhelpful">Very unhelpful</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="26" placeholder="Optional comment"></div></div>
+  <div class="q-card" data-q="27"><div class="q-number">Question 27</div><div class="q-text">Do you think your care workers are generally polite and courteous or somewhat rude and ill-mannered?</div><div class="options"><button class="opt-btn" data-q="27" data-val="Very polite and courteous">Very polite and courteous</button><button class="opt-btn" data-q="27" data-val="Polite and courteous">Polite and courteous</button><button class="opt-btn" data-q="27" data-val="Rude and ill-mannered">Rude and ill-mannered</button><button class="opt-btn" data-q="27" data-val="Very rude and ill-mannered">Very rude and ill-mannered</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="27" placeholder="Optional comment"></div></div>
+  <div class="q-card" data-q="28"><div class="q-number">Question 28</div><div class="q-text">How many different care workers do we normally send you in a week?</div><div class="options"><button class="opt-btn" data-q="28" data-val="One">One</button><button class="opt-btn" data-q="28" data-val="Two">Two</button><button class="opt-btn" data-q="28" data-val="Three">Three</button><button class="opt-btn" data-q="28" data-val="Four">Four</button><button class="opt-btn" data-q="28" data-val="More than 4">More than 4</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="28" placeholder="Optional comment"></div></div>
+  <div class="q-card" data-q="29"><div class="q-number">Question 29</div><div class="q-text">Overall, how satisfied are you with the care that you receive from us?</div><div class="options"><button class="opt-btn" data-q="29" data-val="Very Satisfied">Very Satisfied</button><button class="opt-btn" data-q="29" data-val="Satisfied">Satisfied</button><button class="opt-btn" data-q="29" data-val="Less than satisfied">Less than satisfied</button><button class="opt-btn" data-q="29" data-val="Very Dissatisfied">Very Dissatisfied</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="29" placeholder="Optional comment"></div></div>
 
   <div class="section-label">Section G — Comparison</div>
-  <div class="q-card" data-q="30"><div class="q-number">Question 30</div><div class="q-text">Do you or have you ever received care from any other organisation?</div><div class="options"><button class="opt-btn" data-q="30" data-val="Yes">Yes</button><button class="opt-btn" data-q="30" data-val="No">No</button><button class="opt-btn" data-q="30" data-val="I don't know">I don't know</button></div></div>
-  <div class="q-card" data-q="31"><div class="q-number">Question 31</div><div class="q-text">How do we compare with the other care services you have received care from?</div><div class="options"><button class="opt-btn" data-q="31" data-val="Much Better">Much Better</button><button class="opt-btn" data-q="31" data-val="Better">Better</button><button class="opt-btn" data-q="31" data-val="About average">About average</button><button class="opt-btn" data-q="31" data-val="Not as good">Not as good</button><button class="opt-btn" data-q="31" data-val="Much worse">Much worse</button><button class="opt-btn" data-q="31" data-val="I don't know">I don't know</button></div></div>
+  <div class="q-card" data-q="30"><div class="q-number">Question 30</div><div class="q-text">Do you or have you ever received care from any other organisation?</div><div class="options"><button class="opt-btn" data-q="30" data-val="Yes">Yes</button><button class="opt-btn" data-q="30" data-val="No">No</button><button class="opt-btn" data-q="30" data-val="I don't know">I don't know</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="30" placeholder="Optional comment"></div></div>
+  <div class="q-card" data-q="31"><div class="q-number">Question 31</div><div class="q-text">How do we compare with the other care services you have received care from?</div><div class="options"><button class="opt-btn" data-q="31" data-val="Much Better">Much Better</button><button class="opt-btn" data-q="31" data-val="Better">Better</button><button class="opt-btn" data-q="31" data-val="About average">About average</button><button class="opt-btn" data-q="31" data-val="Not as good">Not as good</button><button class="opt-btn" data-q="31" data-val="Much worse">Much worse</button><button class="opt-btn" data-q="31" data-val="I don't know">I don't know</button></div><div class="inline-field qnote-field">Anything else you’d like to add about this question? <input type="text" class="q-note" data-qnote="31" placeholder="Optional comment"></div></div>
 
   <div class="section-label">Additional Comments</div>
   <div class="comments-section">
@@ -224,17 +232,18 @@
   <div class="section-label">Your Details</div>
   <div class="comments-section">
     <div class="details-grid">
+      <div class="detail-field full"><label>Name of Client</label><input type="text" id="det-client" placeholder="Name of the person receiving care"></div>
       <div class="detail-field full"><label>Name of person completing this survey</label><input type="text" id="det-name" placeholder="Full name"></div>
-      <div class="detail-field"><label>Relationship to Service Provider</label><input type="text" id="det-relationship" placeholder="e.g. Service user, Family member"></div>
-      <div class="detail-field"><label>Date</label><input type="date" id="det-date"></div>
-      <div class="detail-field full"><label>Address</label><textarea rows="2" id="det-address" placeholder="Your address"></textarea></div>
       <div class="detail-field full"><label>Signature</label>
-        <div class="sig-box" id="sig-box" onclick="openSigPad()" role="button" tabindex="0">
-          <div class="sig-placeholder">&#9998;&nbsp; Click here to sign</div>
-          <img id="sig-preview" alt="Signature">
+        <div class="sig-box" id="sig-box" role="button" tabindex="0" onclick="openSigPad()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openSigPad();}">
+          <span class="sig-placeholder" id="sig-placeholder">&#9998; Tap here to sign</span>
+          <img id="sig-preview" alt="Signature" style="display:none">
+          <span class="sig-resign">Tap to sign again</span>
         </div>
-        <div class="sig-line-note" id="sig-note">Click the box above to open a larger signing area.</div>
       </div>
+      <div class="detail-field"><label>Relationship with Service user</label><input type="text" id="det-relationship" placeholder="e.g. Service user, Family member"></div>
+      <div class="detail-field"><label>Date</label><input type="date" id="det-date"></div>
+      <div class="detail-field full"><label>Full Address</label><textarea rows="2" id="det-address" placeholder="Your address"></textarea></div>
     </div>
   </div>
 
@@ -255,7 +264,9 @@
 <div id="summary-screen">
   <div class="summary-header">
     <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcMAAAClCAYAAAAgXJYtAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo4Mzc1MkYwQjU2MDcxMUVCQjgxQzg0NzU2RUM5MjcxQyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo4Mzc1MkYwQzU2MDcxMUVCQjgxQzg0NzU2RUM5MjcxQyI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjgzNzUyRjA5NTYwNzExRUJCODFDODQ3NTZFQzkyNzFDIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjgzNzUyRjBBNTYwNzExRUJCODFDODQ3NTZFQzkyNzFDIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+3RHdcAAAQulJREFUeNrsXQn4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" alt="Living Spring Solutions">
-    <h2>Survey Summary</h2>
+    <div class="sh-eyebrow">Customer Survey</div>
+    <div class="sh-label">Service User</div>
+    <div class="sh-name" id="sum-client">&mdash;</div>
     <p>Thank you for completing the Customer Survey. Your responses are shown below.</p>
   </div>
 
@@ -295,19 +306,22 @@
   </div>
 </div>
 
-<div class="sig-modal" id="sig-modal">
-  <div class="sig-dialog">
-    <div class="sig-head"><h3>Please sign below</h3><span>Use your finger, stylus or mouse</span></div>
-    <div class="sig-stage"><div class="sig-paper" id="sig-paper">
-      <canvas id="sig-canvas"></canvas>
-      <div class="sig-x">&times;</div><div class="sig-baseline"></div><div class="sig-hint">Sign on the line</div>
-    </div></div>
+<div id="sig-modal" aria-modal="true" role="dialog">
+  <div class="sig-bar">
+    <h3>Please sign below</h3>
     <div class="sig-actions">
-      <button class="sig-btn" type="button" onclick="clearSig()">Clear</button>
-      <div class="grp"><button class="sig-btn" type="button" onclick="closeSigPad()">Cancel</button><button class="sig-btn primary" type="button" id="sig-done" onclick="saveSig()" disabled>Done</button></div>
+      <button type="button" class="sig-btn" onclick="closeSigPad()">Cancel</button>
+      <button type="button" class="sig-btn" onclick="clearSigPad()">Clear</button>
+      <button type="button" class="sig-btn primary" onclick="saveSigPad()">Done</button>
     </div>
   </div>
+  <div class="sig-stage" id="sig-stage">
+    <div class="sig-hint">Sign with your finger, stylus or mouse</div>
+    <div class="sig-line"><span>Sign above the line</span></div>
+    <canvas id="sig-canvas"></canvas>
+  </div>
 </div>
+
 <script>
 const answers = {};
 const totalQ = 31;
@@ -346,6 +360,45 @@ const questions = {
   31:"How do we compare with the other care services you have received care from?"
 };
 
+const optionsMap = {
+  1:["1 or 2","3 to 5","6 or 7","8 to 10","More than 10"],
+  2:["Yes","No"],
+  3:["Always","Regularly","Quite often","Hardly ever","Never"],
+  4:["Always","Usually","Sometimes","Never"],
+  5:["No","Yes, on one occasion","Yes, on more than one occasion"],
+  6:["Always","Usually","Sometimes","Never"],
+  7:["Always","Usually","Sometimes","Never"],
+  8:["Very competent","Competent","Incompetent","Very incompetent"],
+  9:["Very Caring","Caring","Uncaring","Very Uncaring"],
+  10:["Always","Usually","Sometimes","Never"],
+  11:["Always","Usually","Sometimes","Never"],
+  12:["Always","Usually","Sometimes","Never"],
+  13:["Always","Usually","Sometimes","Never"],
+  14:["Always","Usually","Sometimes","Never"],
+  15:["Uniform","Ordinary Clothes"],
+  16:["Yes","No"],
+  17:["Always","Usually","Sometimes","Never"],
+  18:["Always","Usually","Sometimes","Never"],
+  19:["Always","Usually","Sometimes","Never"],
+  20:["Always","Usually","Sometimes","Never"],
+  21:["Yes, my Social Worker explained that to me","Yes, somebody else explained it to me","No one explained it to me"],
+  22:["Yes","No"],
+  23:["Yes","No"],
+  24:["Yes","No"],
+  25:["Yes, they seem very helpful","Yes, they seem fairly helpful","No, they are not helpful","No, they seem very unhelpful","I have never contacted the Agency"],
+  26:["Very helpful","Quite helpful","Not helpful","Very unhelpful"],
+  27:["Very polite and courteous","Polite and courteous","Rude and ill-mannered","Very rude and ill-mannered"],
+  28:["One","Two","Three","Four","More than 4"],
+  29:["Very Satisfied","Satisfied","Less than satisfied","Very Dissatisfied"],
+  30:["Yes","No","I don't know"],
+  31:["Much Better","Better","About average","Not as good","Much worse","I don't know"]
+};
+
+const notes = {};
+document.querySelectorAll('.q-note').forEach(inp => {
+  inp.addEventListener('input', () => { notes[inp.dataset.qnote] = inp.value.trim(); });
+});
+
 const sections = {
   "Section A — Visit Frequency & Staff":[1,2,3,4,5],
   "Section B — Quality of Care":[6,7,8,9,10],
@@ -383,12 +436,16 @@ function submitSurvey() {
   }
   buildSummary();
   document.getElementById('survey-form').style.display = 'none';
+  document.querySelector('.header').style.display = 'none';
+  document.querySelector('.progress-bar-wrap').style.display = 'none';
   document.getElementById('summary-screen').classList.add('show');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function sendByEmail() {
   // Collect all form data
+  const clientRaw = document.getElementById('det-client').value.trim();
+  const client   = clientRaw || 'Name not provided';
   const name     = document.getElementById('det-name').value.trim() || '(not provided)';
   const rel      = document.getElementById('det-relationship').value.trim() || '(not provided)';
   const date     = document.getElementById('det-date').value || new Date().toISOString().split('T')[0];
@@ -399,18 +456,26 @@ function sendByEmail() {
   // Build summary rows HTML
   let rows = '';
   for (const [sectionName, qNums] of Object.entries(sections)) {
-    rows += `<tr><td colspan="3" class="sec-head">${sectionName}</td></tr>`;
+    rows += `<div class="sec-head">${esc(sectionName)}</div>`;
     for (const n of qNums) {
-      const ans   = answers[n] || '';
-      const extra = (n == 7 && q7name) ? `<span class="cw"> &mdash; Care worker: ${q7name}</span>` : '';
-      const cls   = ans ? 'ans' : 'ans unanswered';
-      rows += `<tr>
-        <td class="qnum">Q${n}</td>
-        <td class="qtxt">${questions[n]}</td>
-        <td class="${cls}">${ans ? ans + extra : 'Not answered'}</td>
-      </tr>`;
+      const ans  = answers[n] || '';
+      const note = (notes[n] || '').trim();
+      const cw   = (n == 7 && q7name) ? `<div class="cw">Care worker named: <strong>${esc(q7name)}</strong></div>` : '';
+      const optsHtml = (optionsMap[n] || []).map(opt =>
+        `<span class="opt-pill${ans === opt ? ' picked' : ''}">${ans === opt ? '&#10003; ' : ''}${esc(opt)}</span>`
+      ).join('');
+      rows += `<div class="qrow${ans ? '' : ' qrow-unanswered'}">
+        <div class="qrow-top"><span class="qnum">Q${n}</span><span class="qtxt">${esc(questions[n])}</span></div>
+        ${ans ? '' : '<div class="qrow-answer"><em>Not answered</em></div>'}
+        <div class="opt-pills">${optsHtml}</div>
+        ${cw}
+        ${note ? `<div class="qnote"><span class="qnote-label">Additional note</span>${esc(note)}</div>` : ''}
+      </div>`;
     }
   }
+
+  const answeredCount = Object.keys(answers).length;
+  const pct = Math.round((answeredCount / totalQ) * 100);
 
   const LOGO = 'iVBORw0KGgoAAAANSUhEUgAAAcMAAAClCAYAAAAgXJYtAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyRpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoTWFjaW50b3NoKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo4Mzc1MkYwQjU2MDcxMUVCQjgxQzg0NzU2RUM5MjcxQyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDo4Mzc1MkYwQzU2MDcxMUVCQjgxQzg0NzU2RUM5MjcxQyI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOjgzNzUyRjA5NTYwNzExRUJCODFDODQ3NTZFQzkyNzFDIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOjgzNzUyRjBBNTYwNzExRUJCODFDODQ3NTZFQzkyNzFDIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+3RHdcAAAQulJREFUeNrsXQn4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';
 
@@ -418,54 +483,87 @@ function sendByEmail() {
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Customer Survey – Living Spring Solutions – ${name}</title>
+<title>Customer Survey – Living Spring Solutions – ${esc(client)}</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'Inter', Arial, sans-serif; background: #F7F9FC; color: #1A1A2E; padding: 24px 16px 60px; }
+  body { font-family: 'Inter', Arial, sans-serif; background: #EEF2F7; color: #1A1A2E; padding: 28px 16px 60px; }
 
   .page { max-width: 820px; margin: 0 auto; }
 
-  .hdr { background: #fff; border-top: 4px solid #1B5FA8; border-radius: 10px;
-         box-shadow: 0 2px 12px rgba(27,95,168,0.08); padding: 28px 32px; text-align: center; margin-bottom: 20px; }
-  .hdr img { height: 70px; width: auto; margin-bottom: 14px; display: block; margin-left: auto; margin-right: auto; }
-  .hdr h1 { font-size: 22px; font-weight: 700; color: #1A1A2E; margin-bottom: 4px; }
-  .hdr p  { font-size: 13px; color: #6B7280; }
+  .hero { background: linear-gradient(135deg, #1B5FA8, #2AABBB); border-radius: 16px;
+          padding: 38px 32px 32px; text-align: center; color: #fff; margin-bottom: 22px;
+          box-shadow: 0 14px 36px rgba(27,95,168,0.28); }
+  .hero img { height: 60px; width: auto; margin-bottom: 16px; background: #fff; padding: 8px 10px;
+              border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
+  .hero h1 { font-size: 25px; font-weight: 800; letter-spacing: -0.4px; margin-bottom: 6px; }
+  .hero p.meta { font-size: 13px; opacity: 0.92; }
+  .hero .badge { display: inline-block; margin-top: 16px; background: rgba(255,255,255,0.16);
+                 border: 1px solid rgba(255,255,255,0.45); padding: 7px 18px; border-radius: 99px;
+                 font-size: 12.5px; font-weight: 700; letter-spacing: 0.3px; }
 
-  .details-box { background: #fff; border-radius: 10px; box-shadow: 0 2px 12px rgba(27,95,168,0.08);
-                 padding: 20px 24px; margin-bottom: 20px; }
+  .details-box { background: #fff; border-radius: 12px; box-shadow: 0 2px 14px rgba(27,95,168,0.08);
+                 padding: 22px 26px; margin-bottom: 20px; border-top: 3px solid #1B5FA8; }
   .details-box h2 { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
-                    color: #1B5FA8; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #D1D5DB; }
-  .det-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+                    color: #1B5FA8; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid #E5E7EB; }
+  .det-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .det-item .lbl { font-size: 11px; font-weight: 700; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; }
-  .det-item .val { font-size: 14px; color: #1A1A2E; font-weight: 500; margin-top: 2px; }
+  .det-item .val { font-size: 14.5px; color: #1A1A2E; font-weight: 600; margin-top: 3px; }
   .det-item.full { grid-column: 1 / -1; }
 
-  table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-  .sec-head { background: #1B5FA8; color: #fff; font-size: 11px; font-weight: 700;
-              letter-spacing: 1.5px; text-transform: uppercase; padding: 9px 14px; }
-  tr:nth-child(even) td { background: #F7F9FC; }
-  tr:nth-child(odd)  td { background: #fff; }
-  .sec-head + tr td, .sec-head + tr td { background: #EBF2FC; }
-  td { padding: 10px 14px; vertical-align: top; border-bottom: 1px solid #E5E7EB; }
-  .qnum { font-size: 11px; font-weight: 700; color: #6B7280; white-space: nowrap; width: 36px; }
-  .qtxt { font-size: 13px; color: #374151; width: 55%; }
-  .ans  { font-size: 13px; font-weight: 600; color: #1B5FA8; }
-  .unanswered { color: #9CA3AF; font-style: italic; font-weight: 400; }
-  .cw { font-size: 12px; color: #6B7280; font-weight: 400; }
+  .sec-head { background: linear-gradient(90deg, #1B5FA8, #2AABBB); color: #fff; font-size: 11.5px;
+              font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 10px 16px;
+              border-radius: 8px; margin: 24px 0 12px; }
 
-  .comments-box { background: #fff; border-radius: 10px; box-shadow: 0 2px 12px rgba(27,95,168,0.08);
-                  padding: 20px 24px; margin-bottom: 20px; }
+  .qrow { background: #fff; border-radius: 10px; box-shadow: 0 2px 10px rgba(27,95,168,0.07);
+          padding: 16px 20px; margin-bottom: 10px; border-left: 4px solid #2AABBB; }
+  .qrow.qrow-unanswered { border-left-color: #D1D5DB; }
+  .qrow-top { display: flex; gap: 10px; align-items: baseline; margin-bottom: 8px; }
+  .qnum { flex-shrink: 0; font-size: 10.5px; font-weight: 800; color: #fff; background: #1B5FA8;
+          padding: 3px 9px; border-radius: 6px; }
+  .qtxt { font-size: 14px; font-weight: 600; color: #1A1A2E; line-height: 1.45; }
+  .qrow-answer { font-size: 13px; color: #4B5563; margin-bottom: 10px; }
+  .qrow-answer strong { color: #1B5FA8; font-weight: 700; }
+  .qrow-answer em { color: #9CA3AF; font-style: italic; }
+
+  .opt-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 4px; }
+  .opt-pill { font-size: 11.5px; padding: 5px 13px; border-radius: 99px; border: 1.5px solid #E5E7EB;
+              color: #9CA3AF; background: #fff; }
+  .opt-pill.picked { border-color: transparent; background: linear-gradient(135deg, #1B5FA8, #2AABBB);
+                      color: #fff; font-weight: 700; box-shadow: 0 3px 10px rgba(27,95,168,0.35); }
+
+  .cw { margin-top: 8px; font-size: 12px; color: #1B5FA8; background: #E8F1FB; display: inline-block;
+        padding: 4px 11px; border-radius: 6px; }
+  .cw strong { font-weight: 700; }
+
+  .qnote { margin-top: 10px; font-size: 12.5px; color: #6B7280; line-height: 1.6; background: #FAFBFD;
+           border-left: 2px solid #D1D5DB; padding: 8px 12px; border-radius: 0 6px 6px 0; }
+  .qnote-label { display: block; font-size: 10px; font-weight: 700; text-transform: uppercase;
+                 letter-spacing: 0.6px; color: #9CA3AF; margin-bottom: 3px; }
+
+  .comments-box { background: #fff; border-radius: 12px; box-shadow: 0 2px 14px rgba(27,95,168,0.08);
+                  padding: 22px 26px; margin: 22px 0 20px; border-top: 3px solid #2AABBB; }
   .comments-box h2 { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
-                     color: #1B5FA8; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #D1D5DB; }
-  .comments-box p { font-size: 14px; color: #1A1A2E; line-height: 1.6; white-space: pre-wrap; }
+                     color: #1B5FA8; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #E5E7EB; }
+  .comments-box p { font-size: 14px; color: #374151; font-weight: 400; line-height: 1.75; white-space: pre-wrap; }
 
   .footer { text-align: center; font-size: 12px; color: #6B7280; padding: 20px 0 0;
             border-top: 1px solid #D1D5DB; line-height: 1.8; }
 
+  .hero .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 2.2px; text-transform: uppercase; opacity: 0.85; margin-bottom: 18px; }
+  .hero .client-label { font-size: 11px; font-weight: 600; letter-spacing: 1.6px; text-transform: uppercase; opacity: 0.8; }
+  .hero .client-name { font-size: 34px; font-weight: 800; letter-spacing: -0.8px; line-height: 1.15; margin: 4px 0 10px; word-break: break-word; }
+  .sig-wrap { margin-top: 6px; padding: 10px 14px; border-bottom: 2px solid #1A1A2E; display: inline-block; min-width: 220px; }
+  .sig-img { display: block; max-height: 90px; max-width: 100%; }
+  .opt-pill.picked { padding: 5px 15px; font-size: 12px; }
+  .qrow-answer:empty { display: none; }
+
   @media print {
     body { background: #fff; padding: 0; }
-    .hdr, .details-box, .comments-box { box-shadow: none; border: 1px solid #D1D5DB; }
+    .hero, .details-box, .comments-box, .qrow { box-shadow: none; }
+    .hero, .opt-pill.picked, .sec-head, .qnum { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .details-box { break-inside: avoid; }
+    .qrow { border: 1px solid #E5E7EB; border-left: 4px solid #2AABBB; break-inside: avoid; }
     .page { max-width: 100%; }
   }
 </style>
@@ -473,30 +571,33 @@ function sendByEmail() {
 <body>
 <div class="page">
 
-  <div class="hdr">
+  <div class="hero">
     <img src="data:image/png;base64,${LOGO}" alt="Living Spring Solutions">
-    <h1>Customer Survey Summary</h1>
-    <p>Completed on ${date} &mdash; ${name}</p>
+    <div class="eyebrow">Customer Survey</div>
+    <div class="client-label">Service User</div>
+    <div class="client-name">${esc(client)}</div>
+    <p class="meta">Completed on ${esc(date)}</p>
+    <div class="badge">${answeredCount} of ${totalQ} questions answered (${pct}%)</div>
   </div>
 
-  <div class="details-box">
-    <h2>Personal Details</h2>
-    <div class="det-grid">
-      <div class="det-item full"><div class="lbl">Name</div><div class="val">${name}</div></div>
-      <div class="det-item"><div class="lbl">Relationship to Service Provider</div><div class="val">${rel}</div></div>
-      <div class="det-item"><div class="lbl">Date</div><div class="val">${date}</div></div>
-      <div class="det-item full"><div class="lbl">Address</div><div class="val">${addr}</div></div>
-      <div class="det-item full"><div class="lbl">Signature</div><div class="val">${sigData ? '<img src="' + sigData + '" alt="Signature" style="max-height:110px;max-width:100%;margin-top:6px;">' : '&mdash;'}</div></div>
-    </div>
-  </div>
-
-  <table>
-    <tbody>${rows}</tbody>
-  </table>
+  ${rows}
 
   <div class="comments-box">
     <h2>Additional Comments</h2>
-    <p>${comments}</p>
+    <p>${esc(comments)}</p>
+  </div>
+
+  <div class="details-box">
+    <h2>Completed By</h2>
+    <div class="det-grid">
+      <div class="det-item full"><div class="lbl">Name of person completing this survey</div><div class="val">${esc(name)}</div></div>
+      <div class="det-item"><div class="lbl">Relationship with Service user</div><div class="val">${esc(rel)}</div></div>
+      <div class="det-item"><div class="lbl">Date</div><div class="val">${esc(date)}</div></div>
+      <div class="det-item full"><div class="lbl">Full Address</div><div class="val" style="white-space:pre-wrap">${esc(addr)}</div></div>
+      <div class="det-item full"><div class="lbl">Signature</div>
+        ${signatureData ? '<div class="sig-wrap"><img class="sig-img" src="' + signatureData + '" alt="Signature"></div>' : '<div class="val" style="color:#9CA3AF;font-weight:400">Not signed</div>'}
+      </div>
+    </div>
   </div>
 
   <div class="footer">
@@ -514,7 +615,7 @@ function sendByEmail() {
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
   a.href     = url;
-  a.download = 'Survey_' + name.replace(/[^a-zA-Z0-9]/g, '_') + '_' + date + '.html';
+  a.download = 'Survey_' + (clientRaw || name).replace(/[^a-zA-Z0-9]/g, '_') + '_' + date + '.html';
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
@@ -524,167 +625,186 @@ function sendByEmail() {
   document.getElementById('email-instruction').style.display = 'flex';
 }
 
+let signatureData = '';
+
+(function () {
+  const modal = document.getElementById('sig-modal');
+  const stage = document.getElementById('sig-stage');
+  const canvas = document.getElementById('sig-canvas');
+  const ctx = canvas.getContext('2d');
+  let dpr = 1, drawing = false, pts = [], lastW = 1, hasInk = false;
+  let bounds = null;
+  const MAX_W = 2.7, MIN_W = 0.55;
+
+  function fit() {
+    dpr = Math.max(1, window.devicePixelRatio || 1);
+    const w = stage.clientWidth, h = stage.clientHeight;
+    if (!w || !h) return;
+    let snap = null;
+    if (hasInk && canvas.width) { snap = document.createElement('canvas'); snap.width = canvas.width; snap.height = canvas.height; snap.getContext('2d').drawImage(canvas, 0, 0); }
+    canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (snap) { ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.drawImage(snap, 0, 0); ctx.restore(); }
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = '#0a0a0f';
+  }
+
+  function pos(e) { const r = canvas.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top, t: e.timeStamp }; }
+  function grow(p) {
+    if (!bounds) bounds = { x0: p.x, y0: p.y, x1: p.x, y1: p.y };
+    bounds.x0 = Math.min(bounds.x0, p.x); bounds.y0 = Math.min(bounds.y0, p.y);
+    bounds.x1 = Math.max(bounds.x1, p.x); bounds.y1 = Math.max(bounds.y1, p.y);
+  }
+  function seg(x0, y0, cx, cy, x1, y1, w) {
+    ctx.lineWidth = w; ctx.beginPath(); ctx.moveTo(x0, y0); ctx.quadraticCurveTo(cx, cy, x1, y1); ctx.stroke();
+  }
+
+  function down(e) {
+    if (e.button !== undefined && e.button > 0) return;
+    e.preventDefault();
+    canvas.setPointerCapture && canvas.setPointerCapture(e.pointerId);
+    drawing = true; const p = pos(e); pts = [p]; lastW = MIN_W; grow(p);
+    // tiny ink dot so a tap still leaves a mark
+    ctx.fillStyle = '#0a0a0f'; ctx.beginPath(); ctx.arc(p.x, p.y, MIN_W * 0.7, 0, Math.PI * 2); ctx.fill();
+    hasInk = true;
+  }
+
+  function widthFor(prev, cur, e) {
+    let target;
+    if (e && e.pointerType === 'pen' && e.pressure > 0) {
+      target = MIN_W + (MAX_W - MIN_W) * e.pressure;
+    } else {
+      const dt = Math.max(1, cur.t - prev.t);
+      const speed = Math.hypot(cur.x - prev.x, cur.y - prev.y) / dt;      // px per ms
+      target = MAX_W - Math.min(1, speed / 2.2) * (MAX_W - MIN_W) * 1.05; // quicker = thinner, like a real pen
+    }
+    let w = lastW * 0.72 + target * 0.28;
+    const ramp = Math.min(1, 0.3 + pts.length / 9);                        // thin start
+    return Math.max(MIN_W, w * ramp);
+  }
+
+  function addPoint(e) {
+    const p = pos(e); const prev = pts[pts.length - 1];
+    if (Math.hypot(p.x - prev.x, p.y - prev.y) < 1.1) return;
+    const w = widthFor(prev, p, e);
+    pts.push(p); grow(p);
+    const n = pts.length;
+    if (n >= 3) {
+      const a = pts[n - 3], b = pts[n - 2], c = pts[n - 1];
+      const m0 = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }, m1 = { x: (b.x + c.x) / 2, y: (b.y + c.y) / 2 };
+      seg(m0.x, m0.y, b.x, b.y, m1.x, m1.y, (lastW + w) / 2);
+    } else {
+      ctx.lineWidth = w; ctx.beginPath(); ctx.moveTo(prev.x, prev.y); ctx.lineTo(p.x, p.y); ctx.stroke();
+    }
+    lastW = w;
+  }
+
+  function move(e) {
+    if (!drawing) return;
+    e.preventDefault();
+    const list = (e.getCoalescedEvents && e.getCoalescedEvents()) || [];
+    if (list.length) list.forEach(addPoint); else addPoint(e);
+  }
+
+  function up(e) {
+    if (!drawing) return;
+    drawing = false;
+    const n = pts.length;
+    if (n >= 2) {
+      // pen-lift flick: continue along the last direction while the line thins to nothing
+      const a = pts[Math.max(0, n - 4)], b = pts[n - 1];
+      let dx = b.x - a.x, dy = b.y - a.y; const d = Math.hypot(dx, dy) || 1; dx /= d; dy /= d;
+      const dt = Math.max(1, b.t - a.t); const speed = d / dt;
+      const reach = Math.min(16, 3 + speed * 9);
+      let x = b.x, y = b.y, w = lastW; const steps = 7;
+      for (let i = 1; i <= steps; i++) {
+        const k = i / steps, e2 = k * (2 - k), nx = b.x + dx * reach * e2, ny = b.y + dy * reach * e2;
+        const nw = Math.max(0.15, w * (1 - k) * (1 - k * 0.2));
+        ctx.lineWidth = nw; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(nx, ny); ctx.stroke();
+        x = nx; y = ny; grow({ x: nx, y: ny });
+      }
+    }
+    pts = [];
+  }
+
+  canvas.addEventListener('pointerdown', down);
+  canvas.addEventListener('pointermove', move);
+  canvas.addEventListener('pointerup', up);
+  canvas.addEventListener('pointercancel', up);
+  canvas.addEventListener('pointerleave', e => { if (drawing && !(e.buttons)) up(e); });
+  window.addEventListener('resize', () => { if (modal.classList.contains('open')) fit(); });
+
+  function wipe() { ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.restore(); hasInk = false; bounds = null; pts = []; }
+
+  window.openSigPad = function () {
+    modal.classList.add('open'); document.body.style.overflow = 'hidden';
+    requestAnimationFrame(() => { fit(); wipe(); });
+  };
+  window.closeSigPad = function () { modal.classList.remove('open'); document.body.style.overflow = ''; };
+  window.clearSigPad = function () { wipe(); };
+  window.saveSigPad = function () {
+    if (!hasInk || !bounds) { alert('Please sign first, or tap Cancel.'); return; }
+    const pad = 14;
+    const x0 = Math.max(0, Math.floor((bounds.x0 - pad) * dpr)), y0 = Math.max(0, Math.floor((bounds.y0 - pad) * dpr));
+    const x1 = Math.min(canvas.width, Math.ceil((bounds.x1 + pad) * dpr)), y1 = Math.min(canvas.height, Math.ceil((bounds.y1 + pad) * dpr));
+    const cw = Math.max(1, x1 - x0), ch = Math.max(1, y1 - y0);
+    const scale = Math.min(1, 700 / cw);
+    const out = document.createElement('canvas');
+    out.width = Math.max(1, Math.round(cw * scale)); out.height = Math.max(1, Math.round(ch * scale));
+    out.getContext('2d').drawImage(canvas, x0, y0, cw, ch, 0, 0, out.width, out.height);
+    signatureData = out.toDataURL('image/png');
+    const img = document.getElementById('sig-preview');
+    img.src = signatureData; img.style.display = 'block';
+    document.getElementById('sig-placeholder').style.display = 'none';
+    document.getElementById('sig-box').classList.add('signed');
+    closeSigPad();
+  };
+})();
+
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
 function buildSummary() {
   let html = '';
   for (const [sectionName, qNums] of Object.entries(sections)) {
-    html += `<div class="summary-section-label">${sectionName}</div>`;
+    html += `<div class="summary-section-label">${esc(sectionName)}</div>`;
     for (const n of qNums) {
       const ans = answers[n];
-      const extra = (n == 7) ? (document.getElementById('q7-name').value || '') : '';
+      const cw = (n == 7) ? (document.getElementById('q7-name').value || '').trim() : '';
+      const note = (notes[n] || '').trim();
+      const optsHtml = (optionsMap[n] || []).map(opt =>
+        `<span class="sq-opt${ans === opt ? ' picked' : ''}">${ans === opt ? '\u2713 ' : ''}${esc(opt)}</span>`
+      ).join('');
       html += `<div class="summary-card">
         <div class="sq-num">Q${n}</div>
         <div class="sq-body">
-          <div class="sq-q">${questions[n]}</div>
-          <div class="sq-a ${ans ? '' : 'unanswered'}">${ans || 'Not answered'}${extra ? ' — Care worker: ' + extra : ''}</div>
+          <div class="sq-q">${esc(questions[n])}</div>
+          <div class="sq-a ${ans ? '' : 'unanswered'}">${ans ? '' : 'Not answered'}${ans && cw ? 'Care worker: ' + esc(cw) : (cw ? ' — Care worker: ' + esc(cw) : '')}</div>
+          <div class="sq-options">${optsHtml}</div>
+          ${note ? `<div class="sq-note"><strong>Extra note from respondent</strong>${esc(note)}</div>` : ''}
         </div>
       </div>`;
     }
   }
   const comments = document.getElementById('comments').value.trim();
   html += `<div class="summary-section-label">Additional Comments</div>
-  <div class="summary-comments"><div class="sc-label">Comments</div><div class="sc-text">${comments || 'No comments provided.'}</div></div>`;
+  <div class="summary-comments"><div class="sc-label">Comments</div><div class="sc-text">${comments ? esc(comments) : 'No comments provided.'}</div></div>`;
+  const client = document.getElementById('det-client').value.trim();
   const name = document.getElementById('det-name').value.trim();
   const rel = document.getElementById('det-relationship').value.trim();
   const date = document.getElementById('det-date').value;
   const addr = document.getElementById('det-address').value.trim();
-  html += `<div class="summary-section-label">Your Details</div>
+  html += `<div class="summary-section-label">Completed By</div>
   <div class="summary-personal"><div class="sp-grid">
-    <div class="sp-field full"><div class="sp-label">Name</div><div class="sp-val">${name || '—'}</div></div>
-    <div class="sp-field"><div class="sp-label">Relationship to Service Provider</div><div class="sp-val">${rel || '—'}</div></div>
-    <div class="sp-field"><div class="sp-label">Date</div><div class="sp-val">${date || '—'}</div></div>
-    <div class="sp-field full"><div class="sp-label">Address</div><div class="sp-val">${addr || '—'}</div></div>
-    <div class="sp-field full"><div class="sp-label">Signature</div><div class="sp-val">${sigData ? '<img src="' + sigData + '" alt="Signature" style="max-height:110px;max-width:100%;margin-top:6px;">' : '—'}</div></div>
+    <div class="sp-field full"><div class="sp-label">Name of person completing this survey</div><div class="sp-val">${esc(name) || '—'}</div></div>
+    <div class="sp-field"><div class="sp-label">Relationship with Service user</div><div class="sp-val">${esc(rel) || '—'}</div></div>
+    <div class="sp-field"><div class="sp-label">Date</div><div class="sp-val">${esc(date) || '—'}</div></div>
+    <div class="sp-field full"><div class="sp-label">Full Address</div><div class="sp-val" style="white-space:pre-wrap">${esc(addr) || '—'}</div></div>
+    <div class="sp-field full sp-sig"><div class="sp-label">Signature</div>${signatureData ? '<img src="' + signatureData + '" alt="Signature">' : '<div class="sp-val">Not signed</div>'}</div>
   </div></div>`;
+  document.getElementById('sum-client').textContent = client || 'Name not provided';
   document.getElementById('summary-body').innerHTML = html;
 }
-
-/* ===== Ballpoint signature pad ===== */
-let sigData = '';
-(function(){
-  const modal = document.getElementById('sig-modal');
-  const canvas = document.getElementById('sig-canvas');
-  const ctx = canvas.getContext('2d');
-  const doneBtn = document.getElementById('sig-done');
-  let dpr = 1, drawing = false, hasInk = false, pts = [], last = null, lastW = 2, strokeSeed = 0;
-  const INK = [10, 12, 18];
-
-  function resize(keep){
-    const r = canvas.getBoundingClientRect();
-    let snap = null;
-    if (keep && canvas.width) { snap = document.createElement('canvas'); snap.width = canvas.width; snap.height = canvas.height; snap.getContext('2d').drawImage(canvas,0,0); }
-    dpr = Math.max(window.devicePixelRatio || 1, 2);
-    canvas.width = Math.round(r.width * dpr); canvas.height = Math.round(r.height * dpr);
-    ctx.setTransform(dpr,0,0,dpr,0,0);
-    if (snap) ctx.drawImage(snap, 0, 0, r.width, r.height);
-  }
-  function pos(e){ const r = canvas.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top, t: performance.now(), p: (e.pressure && e.pressure !== 0.5) ? e.pressure : 0 }; }
-  function rnd(i){ const x = Math.sin(i * 127.1 + strokeSeed * 311.7) * 43758.5453; return x - Math.floor(x); }
-
-  // Stamp a small ink dot: dense dark core, softer slightly translucent rim (ballpoint ink look)
-  function dot(x, y, w, i){
-    const flow = 0.9 + 0.1 * rnd(i);                       // ink flow variation
-    ctx.fillStyle = 'rgba(' + INK + ',' + (0.55 * flow) + ')';
-    ctx.beginPath(); ctx.arc(x, y, w * 0.5 + 0.28, 0, 6.2832); ctx.fill();
-    ctx.fillStyle = 'rgba(' + INK + ',' + (0.85 * flow) + ')';
-    ctx.beginPath(); ctx.arc(x, y, w * 0.38, 0, 6.2832); ctx.fill();
-  }
-  let stampCount = 0;
-  function seg(a, b, w0, w1){
-    const dx = b.x - a.x, dy = b.y - a.y, d = Math.hypot(dx, dy);
-    const n = Math.max(1, Math.ceil(d / 0.35));
-    for (let k = 1; k <= n; k++){
-      const t = k / n, w = w0 + (w1 - w0) * t;
-      // tiny wobble to emulate ball rolling on paper grain
-      const j = (rnd(stampCount) - 0.5) * 0.12;
-      dot(a.x + dx*t + j, a.y + dy*t - j, w, stampCount++);
-    }
-  }
-  function widthFor(speed, p){
-    // ballpoint: fairly constant line, slightly thinner when fast, slightly bolder when slow/pressed
-    let w = 2.15 - Math.min(speed, 3.2) * 0.32;
-    if (p) w *= 0.75 + p * 0.55;
-    return Math.max(1.05, Math.min(2.5, w));
-  }
-
-  function start(e){
-    e.preventDefault(); canvas.setPointerCapture(e.pointerId);
-    drawing = true; strokeSeed = Math.random() * 100; stampCount = 0;
-    const p = pos(e); pts = [p]; last = p; lastW = 2.0;
-    dot(p.x, p.y, 2.2, 0);
-    hasInk = true; doneBtn.disabled = false;
-    const h = document.querySelector('.sig-hint'); if (h) h.style.display = 'none';
-  }
-  function move(e){
-    if (!drawing) return; e.preventDefault();
-    const evs = (e.getCoalescedEvents && e.getCoalescedEvents().length) ? e.getCoalescedEvents() : [e];
-    for (const ev of evs){
-      const p = pos(ev);
-      if (Math.hypot(p.x - last.x, p.y - last.y) < 0.6) continue;
-      pts.push(p);
-      if (pts.length >= 3){
-        const n = pts.length, p0 = pts[n-3], p1 = pts[n-2], p2 = pts[n-1];
-        // quadratic smoothing through midpoints
-        const m0 = { x:(p0.x+p1.x)/2, y:(p0.y+p1.y)/2 }, m1 = { x:(p1.x+p2.x)/2, y:(p1.y+p2.y)/2 };
-        const dt = Math.max(1, p2.t - p0.t), speed = Math.hypot(p2.x - p0.x, p2.y - p0.y) / dt;
-        const target = widthFor(speed, p2.p), w1 = lastW + (target - lastW) * 0.25;
-        let prev = m0;
-        const steps = 10;
-        for (let k = 1; k <= steps; k++){
-          const t = k/steps, u = 1 - t;
-          const q = { x: u*u*m0.x + 2*u*t*p1.x + t*t*m1.x, y: u*u*m0.y + 2*u*t*p1.y + t*t*m1.y };
-          seg(prev, q, lastW + (w1 - lastW) * ((k-1)/steps), lastW + (w1 - lastW) * (k/steps));
-          prev = q;
-        }
-        lastW = w1;
-      }
-      last = p;
-    }
-  }
-  function end(e){
-    if (!drawing) return; drawing = false;
-    if (pts.length >= 2){ const a = pts[pts.length-1]; // small tail where pen lifts
-      const b = pts[pts.length-2]; const dx = a.x-b.x, dy = a.y-b.y, d = Math.hypot(dx,dy)||1;
-      seg(a, { x: a.x + dx/d*2.5, y: a.y + dy/d*2.5 }, lastW, 0.9); }
-    pts = [];
-  }
-  canvas.addEventListener('pointerdown', start);
-  canvas.addEventListener('pointermove', move);
-  canvas.addEventListener('pointerup', end);
-  canvas.addEventListener('pointercancel', end);
-  canvas.addEventListener('pointerleave', end);
-  window.addEventListener('resize', function(){ if (modal.classList.contains('show')) resize(true); });
-
-  window.openSigPad = function(){
-    modal.classList.add('show'); document.body.style.overflow = 'hidden';
-    requestAnimationFrame(function(){
-      resize(false); hasInk = false; doneBtn.disabled = true;
-      const h = document.querySelector('.sig-hint'); if (h) h.style.display = '';
-    });
-  };
-  window.closeSigPad = function(){ modal.classList.remove('show'); document.body.style.overflow = ''; };
-  window.clearSig = function(){
-    ctx.clearRect(0, 0, canvas.width / dpr, canvas.height / dpr);
-    hasInk = false; doneBtn.disabled = true;
-    const h = document.querySelector('.sig-hint'); if (h) h.style.display = '';
-  };
-  window.saveSig = function(){
-    if (!hasInk) return;
-    // crop to the signature's bounding box
-    const w = canvas.width, h = canvas.height, d = ctx.getImageData ? (function(){ const c = document.createElement('canvas'); c.width = w; c.height = h; const x = c.getContext('2d'); x.drawImage(canvas,0,0); return x.getImageData(0,0,w,h).data; })() : null;
-    let minX = w, minY = h, maxX = 0, maxY = 0;
-    for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (d[(y*w+x)*4+3] > 8){ if (x<minX) minX=x; if (x>maxX) maxX=x; if (y<minY) minY=y; if (y>maxY) maxY=y; }
-    const pad = 16 * dpr; minX = Math.max(0, minX-pad); minY = Math.max(0, minY-pad); maxX = Math.min(w, maxX+pad); maxY = Math.min(h, maxY+pad);
-    const out = document.createElement('canvas'); out.width = maxX-minX; out.height = maxY-minY;
-    out.getContext('2d').drawImage(canvas, minX, minY, out.width, out.height, 0, 0, out.width, out.height);
-    sigData = out.toDataURL('image/png');
-    const img = document.getElementById('sig-preview'); img.src = sigData;
-    document.getElementById('sig-box').classList.add('signed');
-    document.getElementById('sig-note').textContent = 'Signed. Click the signature to sign again.';
-    closeSigPad();
-  };
-  document.getElementById('sig-box').addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openSigPad(); } });
-  document.addEventListener('keydown', function(e){ if (e.key === 'Escape' && modal.classList.contains('show')) closeSigPad(); });
-})();
 
 document.getElementById('det-date').value = new Date().toISOString().split('T')[0];
 </script>
