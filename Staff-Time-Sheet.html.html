@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en-GB"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Staff Attendance Sheet – Living Spring Solutions</title>
+<style>
+:root{--z:1}
+*{box-sizing:border-box}
+body{margin:0;background:#e5e7eb;font:14px Calibri,Carlito,Arial,sans-serif;color:#000}
+.bar{max-width:794px;margin:0 auto;padding:10px 12px}
+.how{background:#fff;border-radius:10px;padding:10px 14px;font-size:14px;line-height:1.45;margin-bottom:8px}
+.how b{color:#0f766e}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+.btns button{font:600 14px Arial,sans-serif;border:0;border-radius:8px;padding:10px 14px;background:#fff;color:#111;box-shadow:0 1px 2px #0003;cursor:pointer}
+.btns .go{background:#0f766e;color:#fff}
+.sheets{zoom:var(--z);display:flex;flex-direction:column;align-items:center;gap:14px;padding-bottom:30px}
+.sheet{width:794px;height:1123px;background:#fff;padding:26px 40px 18px;position:relative;overflow:hidden;box-shadow:0 1px 6px #0003;break-inside:avoid}
+.hd{text-align:center}
+.hd img{height:58px;display:block;margin:0 auto}
+.co{font-size:20px;font-weight:700;margin-top:2px}
+.ad{font-size:11px;margin-top:2px}.ad a{color:#1d4ed8}
+.ti{font-size:16px;font-weight:700;text-decoration:underline;margin:16px 0 12px}
+table{width:100%;border-collapse:collapse;table-layout:fixed;break-inside:avoid}
+td,th{border:1px solid #000;padding:0 4px;height:32px;vertical-align:middle;break-inside:avoid}
+th{font-size:11px;font-weight:700;height:38px;line-height:1.15}
+.big td{font-size:17px;font-weight:700;height:34px}
+.big input{font:600 17px Calibri,Carlito,Arial,sans-serif}
+input{width:100%;border:0;background:transparent;font:13px Calibri,Carlito,Arial,sans-serif;color:#000;padding:2px 0;outline:0}
+input:focus{background:#fef9c3}
+input.tot,input.nt{font:700 14px Calibri,Carlito,Arial,sans-serif}
+.ln{display:inline-block;width:70%;border-bottom:1px solid #000;vertical-align:bottom}
+.gt{font-weight:700;font-size:12px;border-right:0}
+.gt small{font-weight:400;margin-left:14px}
+.dc{font-size:10.5px;font-weight:700;padding:5px 5px 28px;line-height:1.35;height:auto}
+.dc p{margin:0 0 12px}
+#sendDlg[hidden],#nightDlg[hidden]{display:none}
+.sr{display:flex;align-items:center;gap:8px}
+.sg{flex:1;height:30px;border-bottom:1px solid #000;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.sg img{max-height:28px;max-width:100%}
+.sg:empty::after{content:"tap to sign";font:400 11px Arial,sans-serif;color:#9ca3af}
+#sigModal{position:fixed;inset:0;z-index:100;background:#fff;display:flex;flex-direction:column;height:100dvh}
+#sigModal[hidden]{display:none}
+.sbar{display:flex;gap:8px;align-items:center;padding:10px 12px;border-bottom:1px solid #e5e7eb}
+.sbar .stt{flex:1;font:700 15px Arial,sans-serif;color:#374151}
+.sbar button{font:600 16px Arial,sans-serif;border:0;border-radius:8px;padding:11px 16px;background:#e5e7eb;color:#111}
+.sbar .dg{background:#fee2e2;color:#991b1b}.sbar .go{background:#0f766e;color:#fff}
+#sigWrap{flex:1;position:relative;min-height:0}
+#sigCanvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair}
+#sigGuide{position:absolute;left:6%;right:6%;top:62%;border-bottom:2px dotted #9ca3af;pointer-events:none;color:#9ca3af;font-size:22px;line-height:0}
+.bx button,.bx .mail{font:600 16px Arial,sans-serif;border:0;border-radius:8px;padding:11px 16px;background:#e5e7eb;color:#111;text-decoration:none;display:inline-block}
+.ov{position:fixed;inset:0;background:#0008;z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
+.bx{background:#fff;border-radius:14px;padding:22px;max-width:360px;width:100%;text-align:center;font-family:Arial,sans-serif}
+.bx h2{margin:0 0 8px;font-size:20px}.bx p{margin:0 0 16px;font-size:16px;line-height:1.5}
+.bx .mail{background:#0f766e;color:#fff;margin-right:8px}
+#nightDlg .bx button{display:block;width:100%;margin:0 0 10px}
+#nightDlg .bx .mail{margin-right:0}
+@page{size:A4;margin:0}
+@media print{
+ body{background:#fff}.bar,#sigModal,.ov{display:none!important}
+ .sheets{zoom:1;display:block;padding:0}
+ .sheet{box-shadow:none;margin:0;page-break-after:always;break-after:page}
+ .sheet:last-child{page-break-after:auto;break-after:auto}
+ input{-webkit-appearance:none;appearance:none}
+ .sg:empty::after{content:""}
+ *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style></head><body>
+<div class="bar">
+ <div class="btns"><button class="go" id="bp">Save as PDF / Print</button><button id="ap">+ Add page</button><button id="rp">– Remove last page</button><button id="rt">Recalculate totals</button><button id="ca">Clear all</button></div>
+</div>
+<div class="sheets" id="sh"></div>
+<div id="sigModal" hidden>
+ <div class="sbar"><button id="sigCancel">Cancel</button><div class="stt">Sign below</div><button id="sigClear" class="dg">Clear</button><button id="sigDone" class="go">Save signature</button></div>
+ <div id="sigWrap"><canvas id="sigCanvas"></canvas><div id="sigGuide"><span>✕</span></div></div>
+</div>
+<div id="sendDlg" class="ov" hidden><div class="bx"><h2>PDF saved</h2><p>Now please send the timesheet to<br><b>info@lssct.org</b></p><a class="mail" href="mailto:info@lssct.org?subject=Staff%20Attendance%20Sheet">Open email</a><button id="sdClose">Close</button></div></div>
+<div id="nightDlg" class="ov" hidden><div class="bx"><h2>How should this night shift be recorded?</h2><p id="ndT"></p><button class="mail" id="ndSleep">Sleep-in Night</button><button class="mail" id="ndWake">Waking Night</button><button id="ndCancel">Cancel</button></div></div>
+<script>
+(function(){
+'use strict';
+var LOGO='data:image/png;base64,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', PP=15, KEY='lss-attendance-v1';
+var S={name:'',ename:'',dept:'',sig:'',rows:[],tots:[]}, $=function(s){return document.querySelector(s)};
+function blank(){return {d:'',r:'',c:'',s:'',f:'',h:'',g:'',m:0}}
+function fixT(){
+  var n=S.rows.length/PP;
+  if(!Array.isArray(S.tots))S.tots=[];
+  while(S.tots.length<n)S.tots.push({h:null,n:null});
+  S.tots.length=n;
+  S.tots=S.tots.map(function(t){
+    t=(t&&typeof t==='object')?t:{};
+    return {h:(t.h===undefined||t.h===null||t.h==='')?null:String(t.h),n:(t.n===undefined||t.n===null||t.n==='')?null:String(t.n)}})}
+function fill(){while(S.rows.length<PP||S.rows.length%PP)S.rows.push(blank());fixT()}
+try{var j=JSON.parse(localStorage.getItem(KEY));
+  if(j&&Array.isArray(j.rows)){
+    S={name:String(j.name==null?'':j.name),ename:String(j.ename==null?'':j.ename),dept:String(j.dept==null?'':j.dept),sig:'',
+       rows:j.rows.map(function(r){r=(r&&typeof r==='object')?r:{};var b=blank();for(var k in b){if(k==='m')b.m=r.m?1:0;else if(k==='g')b.g='';else b[k]=r[k]==null?'':String(r[k])}return b}),
+       tots:Array.isArray(j.tots)?j.tots:[]}}}catch(e){}
+fill();
+function save(){try{var c=JSON.parse(JSON.stringify(S));c.sig='';c.rows.forEach(function(r){r.g=''});localStorage.setItem(KEY,JSON.stringify(c))}catch(e){}}
+function esc(v){return (v===undefined||v===null?'':String(v)).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')}
+function num(v){var n=parseFloat(v);return isNaN(n)?0:n}
+function fmt(n){return String(Math.round(n*100)/100)}
+function inp(t,k,i,v){return '<input type="text" data-k="'+k+'" data-i="'+i+'" value="'+esc(v)+'" autocomplete="off">'}
+
+function hrs(v){v=String(v||'');if(/night|sleep/i.test(v))return 0;var m=/(\d+):(\d{1,2})/.exec(v);if(m)return +m[1]+ +m[2]/60;m=/\d+(\.\d+)?/.exec(v);return m?parseFloat(m[0]):0}
+function nights(v){v=String(v||'');if(!/night|sleep/i.test(v))return 0;var m=/(\d+)\s*(?:x\s*)?(?:nights?|sleep)/i.exec(v);return m?+m[1]:1}
+/* totals: page total = typed override if there is one, otherwise the sum of the rows */
+function sums(){
+  var n=S.rows.length/PP,ah=0,an=0,p;
+  for(p=0;p<n;p++){var h=0,k=0,T=S.tots[p]||{h:null,n:null};
+    S.rows.slice(p*PP,p*PP+PP).forEach(function(r){h+=hrs(r.h);k+=nights(r.h)});
+    var a=document.querySelector('.tot[data-p="'+p+'"]'),b=document.querySelector('.nt[data-p="'+p+'"]');
+    if(T.h===null){if(a)a.value=h?fmt(h):'';ah+=h}else ah+=num(T.h);
+    if(T.n===null){if(b)b.value=k?String(k):'';an+=k}else an+=num(T.n)}
+  document.querySelectorAll('.allh').forEach(function(e){e.textContent=fmt(ah)});
+  document.querySelectorAll('.alln').forEach(function(e){e.textContent=fmt(an)})}
+function clearTot(i){var p=Math.floor(i/PP);if(S.tots[p])S.tots[p]={h:null,n:null}}
+/* time parsing: 8:00, 08:00, 16:00, 0800, 8 AM, 08:00 AM, 4pm, 4 p.m. -> minutes after midnight, or null */
+function tm(v){
+  v=String(v==null?'':v).toLowerCase().replace(/\s+/g,'');
+  var m=/^(\d{1,2})(?:[:.h]?(\d{2}))?(?:([ap])(?:\.?m\.?)?)?$/.exec(v);
+  if(!m)return null;
+  var h=+m[1],mi=m[2]?+m[2]:0;
+  if(mi>59)return null;
+  if(m[3]){if(h<1||h>12)return null;h=h%12+(m[3]==='p'?12:0)}
+  else if(h>23)return null;
+  return h*60+mi}
+function hm(x){x=((x%1440)+1440)%1440;var h=Math.floor(x/60),m=x%60;return (h<10?'0':'')+h+':'+(m<10?'0':'')+m}
+function setH(i,v){
+  var r=S.rows[i];if(!r)return;r.h=v;
+  var o=document.querySelector('[data-k=h][data-i="'+i+'"]');if(o)o.value=v;
+  clearTot(i);sums();save()}
+/* automatic hours from start/finish. ask=true (on leaving the field) lets a midnight-crossing shift raise the question */
+function auto(i,ask){
+  var r=S.rows[i];if(!r)return;
+  var a=tm(r.s),b=tm(r.f);
+  if(a===null||b===null||a===b)return;
+  if(b===0)b=1440;                       /* finishing exactly at midnight is an ordinary shift */
+  if(b>a){setH(i,fmt((b-a)/60));return}
+  if(ask)askNight(i,a,b)}
+var ni=-1,na=0,nb=0;
+function askNight(i,a,b){
+  ni=i;na=a;nb=b;
+  $('#ndT').textContent=hm(a)+' to '+hm(b)+' ('+fmt((1440-a+b)/60)+' hours)';
+  $('#nightDlg').hidden=false}
+function nightClose(){$('#nightDlg').hidden=true;ni=-1}
+$('#ndSleep').onclick=function(){var i=ni;nightClose();if(i>=0)setH(i,'1 night')};
+$('#ndWake').onclick=function(){var i=ni,a=na,b=nb;nightClose();if(i>=0)setH(i,fmt((1440-a+b)/60))};
+$('#ndCancel').onclick=nightClose;
+
+function cap(t){var a=t.selectionStart,b=t.selectionEnd,v=t.value,c=v.replace(/(^|[\s\-'’.])([a-z])/g,function(m,x,y){return x+y.toUpperCase()});if(c!==v){t.value=c;try{t.setSelectionRange(a,b)}catch(e){}}return c}
+function ini(v){return v.split(/[\s\-]+/).filter(Boolean).map(function(w){return w.charAt(0).toUpperCase()}).join('')}
+function page(p,n){
+  var T=S.tots[p]||{h:null,n:null};
+  var h='<section class="sheet"><div class="hd"><img src="'+LOGO+'" alt="Living Spring Solutions"><div class="co">Living Spring Solutions (Care &amp; Training) Limited.</div><div class="ad">Office C 302, Access Self Storage, 20 Bugsby\'s Way, London SE7 7SJ. <a href="mailto:info@lssct.org">info@lssct.org</a>, 020 8858 9336</div><div class="ti">STAFF ATTENDANCE SHEET</div></div>';
+  h+='<table class="big"><colgroup><col style="width:100px"><col style="width:62px"><col style="width:190px"><col style="width:80px"><col style="width:80px"><col style="width:70px"><col style="width:132px"></colgroup>';
+  h+='<tr><td colspan="7">Name: <input data-top="name" style="width:80%" value="'+esc(S.name)+'"></td></tr>';
+  h+='<tr><td colspan="4" style="font-weight:700"><div class="sr">Sign: <div class="sg" data-sg="e">'+(S.sig?'<img src="'+S.sig+'" alt="">':'')+'</div></div></td><td colspan="3">Department: <input data-top="dept" style="width:50%" value="'+esc(S.dept)+'"></td></tr></table>';
+  h+='<table><colgroup><col style="width:100px"><col style="width:62px"><col style="width:190px"><col style="width:80px"><col style="width:80px"><col style="width:70px"><col style="width:132px"></colgroup>';
+  h+='<tr><th>Date</th><th>Client Ref/Initial</th><th>Client name</th><th>Start Time</th><th>Finish Time</th><th>Hours / Sleep-ins</th><th>Signed Client</th></tr>';
+  for(var q=0;q<PP;q++){var i=p*PP+q,r=S.rows[i];
+    h+='<tr><td>'+inp('date','d',i,r.d)+'</td><td>'+inp('text','r',i,r.r)+'</td><td>'+inp('text','c',i,r.c)+'</td><td>'+inp('time','s',i,r.s)+'</td><td>'+inp('time','f',i,r.f)+'</td><td>'+inp('text','h',i,r.h)+'</td><td></td></tr>'}
+  var lastp=n>1&&p===n-1;
+  h+='<tr><td colspan="5" class="gt">Total hours'+(lastp?'<small>All pages: <span class="allh"></span></small>':'')+'</td><td><input class="tot" data-tt="h" data-p="'+p+'" value="'+esc(T.h)+'" autocomplete="off"></td><td></td></tr>';
+  h+='<tr><td colspan="5" class="gt">Total sleep-in nights'+(lastp?'<small>All pages: <span class="alln"></span></small>':'')+'</td><td><input class="nt" data-tt="n" data-p="'+p+'" value="'+esc(T.n)+'" autocomplete="off"></td><td></td></tr></table>';
+  h+='<table style="margin-top:-1px"><colgroup><col style="width:130px"><col style="width:210px"><col style="width:100px"><col></colgroup><tr><td style="font-size:11px;height:44px">Name (employee)</td><td><input data-top="ename" value="'+esc(S.ename)+'" autocomplete="off"></td><td style="font-size:11px">Signed (Employee)</td><td></td></tr>';
+  h+='<tr><td colspan="4" class="dc"><p>Signed as a true record of client attendance sheet, and on the understanding that false declaration is a disciplinary offence and may result in disciplinary action.</p><p>This form is to be transmitted or handed to Administration on completion of the working week.</p></td></tr></table></section>';
+  return h}
+function render(){
+  fill();var n=S.rows.length/PP,h='';for(var p=0;p<n;p++)h+=page(p,n);
+  $('#sh').innerHTML=h;
+  sums();save()}
+$('#sh').addEventListener('input',function(e){
+  var t=e.target,k=t.dataset.k,i=t.dataset.i;
+  if(t.dataset.top){
+    var key=t.dataset.top,v=cap(t);S[key]=v;
+    document.querySelectorAll('[data-top="'+key+'"]').forEach(function(o){if(o!==t)o.value=v});save();return}
+  if(t.dataset.tt){
+    var T=S.tots[t.dataset.p];if(T){T[t.dataset.tt]=t.value;sums();save()}return}
+  if(!k)return;var r=S.rows[i];
+  if(k==='c'){
+    r.c=cap(t);
+    if(!r.m){r.r=ini(r.c);var ro=document.querySelector('[data-k=r][data-i="'+i+'"]');if(ro)ro.value=r.r}
+  }else if(k==='r'){r.r=t.value.toUpperCase();if(t.value!==r.r)t.value=r.r;r.m=r.r?1:0}
+  else r[k]=t.value;
+  if(k==='h'){clearTot(i);sums()}
+  if(k==='s'||k==='f')auto(i,false);
+  save()});
+$('#sh').addEventListener('change',function(e){
+  var t=e.target;
+  if(t.dataset.tt){                       /* emptied total goes back to automatic */
+    var T=S.tots[t.dataset.p];
+    if(T&&t.value.trim()===''){T[t.dataset.tt]=null;sums();save()}return}
+  if(t.dataset.k==='s'||t.dataset.k==='f'){auto(+t.dataset.i,true);save()}});
+/* staff signature page (same pen as the ABC form, a little thicker) */
+var modal=$('#sigModal'),cv=$('#sigCanvas'),ctx=cv.getContext('2d'),strokes=[],cur=null,W=0,H=0,raf=0;
+var MIN_W=1.4,MAX_W=5.4,RAMP=30,BOOST=1.25;
+function sf(){return Math.max(1,Math.min(2,W/420))}
+function resize(){var r=cv.getBoundingClientRect(),d=Math.min(3,window.devicePixelRatio||1);W=r.width;H=r.height;cv.width=Math.round(W*d);cv.height=Math.round(H*d);ctx.setTransform(d,0,0,d,0,0);draw()}
+function flat(pts,f,bo){
+  var n=pts.length,mx=MAX_W*f*bo,mn=MIN_W*f*bo,segs=[],i;
+  if(n===1)return {dot:{x:pts[0].x,y:pts[0].y,r:mx*.45},segs:segs};
+  var L=[0];for(i=1;i<n;i++)L[i]=L[i-1]+Math.hypot(pts[i].x-pts[i-1].x,pts[i].y-pts[i-1].y);
+  var tot=L[n-1],ramp=Math.min(RAMP*f,tot*.45),w=[];
+  for(i=0;i<n;i++){var d=Math.min(L[i],tot-L[i]),k=ramp>0?Math.min(1,d/ramp):1;k=k*k*(3-2*k);w[i]=mn+(mx-mn)*k}
+  var a=pts[0];
+  for(i=1;i<n;i++){
+    var b=i<n-1?{x:(pts[i].x+pts[i+1].x)/2,y:(pts[i].y+pts[i+1].y)/2}:pts[i],c=pts[i],wi=(w[i-1]+w[i])/2,px=a.x,py=a.y;
+    for(var q=1;q<=6;q++){var u=q/6,x=(1-u)*(1-u)*a.x+2*(1-u)*u*c.x+u*u*b.x,y=(1-u)*(1-u)*a.y+2*(1-u)*u*c.y+u*u*b.y;segs.push({x1:px,y1:py,x2:x,y2:y,w:wi});px=x;py=y}
+    a=b}
+  return {dot:null,segs:segs}}
+function paint(c,pts,f,bo){
+  var g=flat(pts,f,bo);c.lineCap='round';c.lineJoin='round';c.strokeStyle='#000';c.fillStyle='#000';
+  if(g.dot){c.beginPath();c.arc(g.dot.x,g.dot.y,g.dot.r,0,Math.PI*2);c.fill();return}
+  g.segs.forEach(function(s){c.beginPath();c.moveTo(s.x1,s.y1);c.lineTo(s.x2,s.y2);c.lineWidth=s.w;c.stroke()})}
+function draw(){ctx.clearRect(0,0,W,H);var f=sf();strokes.forEach(function(s){paint(ctx,s,f,1)})}
+function later(){if(!raf)raf=requestAnimationFrame(function(){raf=0;draw()})}
+function pos(e){var r=cv.getBoundingClientRect();return {x:e.clientX-r.left,y:e.clientY-r.top}}
+cv.addEventListener('pointerdown',function(e){e.preventDefault();try{cv.setPointerCapture(e.pointerId)}catch(_){}cur=[pos(e)];strokes.push(cur);later()});
+cv.addEventListener('pointermove',function(e){
+  if(!cur)return;e.preventDefault();
+  var evs=(e.getCoalescedEvents&&e.getCoalescedEvents())||[e];if(!evs.length)evs=[e];
+  evs.forEach(function(ev){var p=pos(ev),q=cur[cur.length-1];if(Math.hypot(p.x-q.x,p.y-q.y)>=1.2)cur.push(p)});later()});
+['pointerup','pointercancel'].forEach(function(n){cv.addEventListener(n,function(){cur=null;later()})});
+cv.addEventListener('contextmenu',function(e){e.preventDefault()});
+window.addEventListener('resize',function(){if(!modal.hidden)setTimeout(resize,50)});
+function openSig(){strokes=[];cur=null;modal.hidden=false;document.body.style.overflow='hidden';requestAnimationFrame(resize)}
+function closeSig(){modal.hidden=true;document.body.style.overflow=''}
+function exportSig(){
+  if(!strokes.length)return null;
+  var f=sf(),x0=1e9,y0=1e9,x1=-1e9,y1=-1e9,pd=MAX_W*f*BOOST+4;
+  strokes.forEach(function(s){s.forEach(function(p){x0=Math.min(x0,p.x);y0=Math.min(y0,p.y);x1=Math.max(x1,p.x);y1=Math.max(y1,p.y)})});
+  x0-=pd;y0-=pd;x1+=pd;y1+=pd;var w=x1-x0,h=y1-y0;
+  var R=Math.max(3,Math.min(6,Math.ceil((window.devicePixelRatio||1)*2)));while(Math.max(w,h)*R>4096&&R>1)R--;
+  var o=document.createElement('canvas');o.width=Math.max(1,Math.round(w*R));o.height=Math.max(1,Math.round(h*R));
+  var c=o.getContext('2d');c.scale(R,R);
+  strokes.forEach(function(s){paint(c,s.map(function(p){return {x:p.x-x0,y:p.y-y0}}),f,BOOST)});
+  return o.toDataURL('image/png')}
+$('#sigCancel').onclick=closeSig;
+$('#sigClear').onclick=function(){strokes=[];cur=null;draw()};
+$('#sigDone').onclick=function(){
+  var u=exportSig();if(!u){alert('Please sign first, or tap Cancel.');return}
+  S.sig=u;closeSig();render()};
+$('#sh').addEventListener('click',function(e){if(e.target.closest('.sg'))openSig()});
+/* buttons */
+var printed=false;
+function sendPopup(){if(!printed)return;printed=false;$('#sendDlg').hidden=false}
+$('#bp').onclick=function(){
+  document.activeElement&&document.activeElement.blur();
+  if(!$('#nightDlg').hidden)return;      /* a night-shift question is waiting: answer it first */
+  printed=true;window.print()};
+window.addEventListener('afterprint',function(){setTimeout(sendPopup,300)});
+document.addEventListener('visibilitychange',function(){if(!document.hidden&&printed)setTimeout(sendPopup,1200)});
+$('#sdClose').onclick=function(){$('#sendDlg').hidden=true};
+$('#ap').onclick=function(){for(var i=0;i<PP;i++)S.rows.push(blank());render();window.scrollTo(0,document.body.scrollHeight)};
+$('#rp').onclick=function(){
+  if(S.rows.length<=PP)return;
+  var last=S.rows.slice(-PP),lt=S.tots[S.tots.length-1]||{},used=last.some(function(r){return r.d||r.r||r.c||r.s||r.f||r.h||r.g})||lt.h!=null||lt.n!=null;
+  if(used&&!confirm('The last page has entries. Remove it anyway?'))return;
+  S.rows.length-=PP;render()};
+$('#rt').onclick=function(){S.tots=S.tots.map(function(){return {h:null,n:null}});render()};
+$('#ca').onclick=function(){if(confirm('Clear everything on this form?')){nightClose();S={name:'',ename:'',dept:'',sig:'',rows:[],tots:[]};render()}};
+function zoom(){document.documentElement.style.setProperty('--z',Math.min(1,(window.innerWidth-12)/794))}
+window.addEventListener('resize',zoom);zoom();render();
+})();
+</script></body></html>
