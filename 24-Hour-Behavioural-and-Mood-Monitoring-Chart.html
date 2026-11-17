@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>24 Hour Behavioural and Mood Monitoring Chart</title>
+<style>
+@page{size:A4;margin:0}
+*{box-sizing:border-box}
+body{margin:0;background:#d9d9d9;font:10pt/1.24 Arial,"Liberation Sans",Helvetica,sans-serif;color:#000}
+.paper,.sheet{width:210mm;background:#fff;padding:25.4mm}
+.paper{margin:12px auto;min-height:297mm}
+.sheet{height:297mm;overflow:hidden}
+#root{position:absolute;left:-99999px;top:0}
+p{margin:0 0 8pt}
+.fi{font:inherit;border:0;background:transparent;outline:0;padding:0;margin:0;color:#000;min-width:40px}.fi::placeholder{color:#000;opacity:1}.fi:hover,.fi:focus{background:#fff8d6}
+.lv{cursor:pointer}.lv.on{box-shadow:0 0 0 1px #000;border-radius:8px}
+table{border-collapse:collapse;table-layout:fixed;width:450.8pt}
+td{border:.5pt solid #000;padding:0 5.4pt;vertical-align:top;font-size:8pt;line-height:1.149;height:56.7pt;overflow-wrap:anywhere}
+tr.h td{background:#FFE599;font-size:10pt;height:auto}
+tr.h2 td{font-size:6pt}
+td.v{white-space:pre-wrap}
+textarea{display:block;width:100%;height:56.7pt;min-height:56.7pt;border:0;background:transparent;resize:none;overflow:hidden;font:inherit;line-height:inherit;padding:0;margin:0;outline:0;color:#000}
+td.sg{padding:2px}td.sg img{display:block;max-width:100%;max-height:52pt;margin:auto}
+.ui{display:inline-block;font:600 7pt Arial,sans-serif}
+.rs{padding:2px 5px;background:#1a5fd0;color:#fff;border:0;border-radius:3px;margin-top:3px;cursor:pointer}
+.ok{color:#0a7a2f;margin-top:3px}.ed{background:none;border:0;color:#1a5fd0;text-decoration:underline;cursor:pointer;padding:0 0 0 3px;font:inherit}
+.bar{width:450.8pt;margin:10px 0;text-align:right}
+.bar button,.tools button,.mb button{font:600 10pt Arial,sans-serif;padding:7px 14px;border:0;border-radius:5px;background:#1a5fd0;color:#fff;cursor:pointer;margin-left:6px}
+.tools{text-align:center;padding:0 0 14px}.tools button.g{background:#555}.tools button.c{background:#c0392b}
+.mask{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:9}
+.mask.on{display:flex}
+.mb{background:#fff;border-radius:8px;padding:16px;max-width:94vw;font-family:Arial,sans-serif}
+.mb h3{margin:0 0 8px;font-size:13pt}
+#cv{background:#fff;border:1px solid #888;touch-action:none;display:block;width:min(640px,86vw);height:260px;cursor:crosshair;background-image:linear-gradient(#999,#999);background-size:calc(100% - 40px) 1px;background-position:20px 205px;background-repeat:no-repeat}
+.mb .r{text-align:right;margin-top:10px}.mb .x{background:#777}.mb .c{background:#c0392b}
+@media print{body{background:#fff}#app,.mask{display:none!important}#root{position:static}
+.sheet{height:296.6mm;break-after:page}.sheet:last-child{break-after:auto}}
+</style></head><body>
+<div id="app"><div class="paper" id="paper"></div><div class="tools" id="tools"></div></div>
+<div id="root"></div>
+<div class="mask" id="sm"><div class="mb"><h3>Sign – <span id="st"></span></h3><canvas id="cv"></canvas>
+<div class="r"><button class="x" id="sx">Cancel</button><button class="c" id="sc">Clear</button><button id="ss">Save</button></div></div></div>
+<div class="mask" id="mm"><div class="mb"><h3>Midnight – the day has ended</h3><p>Save the full 24 hour chart as a PDF. A new blank chart will open afterwards.</p><div class="r"><button id="ms">Save PDF</button></div></div></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+(function(){
+var HOST=/^https?:/.test(location.protocol)||/save=1/.test(location.search);
+var KEY='ls_mood_chart_v1';
+// Times exactly as in the original Word chart (1245 and 2045-2130 are not in the original)
+var T='0000 0015 0030 0045 0100 0115 0130 0145 0200 0215 0230 0245 0300 0315 0330 0345 0400 0415 0430 0445 0500 0515 0530 0545 0600 0615 0630 0645 0700 0715 0730 0745 0800 0815 0830 0845 0900 0915 0930 0945 1000 1015 1030 1045 1100 1115 1130 1145 1200 1215 1230 1300 1315 1330 1345 1400 1415 1430 1445 1500 1515 1530 1600 1615 1630 1645 1700 1715 1730 1745 1800 1815 1830 1845 1900 1915 1930 1945 2000 2015 2030 2145 2200 2215 2230 2245 2300 2315 2330 2345'.split(' ');
+var B=[{n:'00:00 – 08:00',a:'0000',b:'0745'},{n:'08:00 – 16:00',a:'0800',b:'1545'},{n:'16:00 – 22:00',a:'1600',b:'2145'},{n:'22:00 – 00:00',a:'2200',b:'2345'}];
+B.forEach(function(x){x.t=T.filter(function(t){return t>=x.a&&t<=x.b})});
+var F=[['n','Patients Name ','………………………','\n'],['d','Date','………………','\n'],['o','Level of additional support 1:1 – 2:1      Hours additional support supplied: 24 hrs  Other ','……………',' Start '],['s','','………………','End'],['e','','','']];
+var S=load();
+function load(){try{var s=JSON.parse(localStorage.getItem(KEY));if(s&&s.rows)return s}catch(e){}return{day:null,h:{},rows:{}}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function today(){var d=new Date();return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
+function touch(){if(!S.day)S.day=today()}
+function esc(s){return String(s==null?'':s).replace(/[&<>]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;'}[c]})}
+var COLS='<colgroup><col style="width:52.6pt"><col style="width:112.1pt"><col style="width:109pt"><col style="width:118.35pt"><col style="width:58.75pt"></colgroup>';
+var HEAD='<tr class="h"><td>Time</td><td>Antecedent</td><td>Behaviour Mood</td><td>Consequence</td><td>Print and sign name</td></tr><tr class="h h2"><td></td><td>What was happening before the mood behaviour changed</td><td>Describe the behaviour and mood carefully. What was the patient doing what did you see or hear descript facial expression, impulsive behaviours etc</td><td>What happened after the mood behaviour?</td><td></td></tr>';
+function hdr(live){var H=S.h||{};
+ function f(k,ph){var v=H[k]||'';return live?'<input class="fi" data-k="'+k+'" placeholder="'+ph+'" value="'+esc(v).replace(/"/g,'&quot;')+'">':esc(v||ph)}
+ function lv(x){return '<span class="lv'+(H.l==x?' on':'')+'"'+(live?' data-l="'+x+'"':'')+'>'+x+'</span>'}
+ return '<p>24 Hour Behavioural and Mood Monitoring Chart</p><p>Patients Name '+f('n','………………………')+'</p><p>Date'+f('d','………………')+'</p><p style="white-space:pre-wrap">Level of additional support '+lv('1:1')+' – '+lv('2:1')+'      Hours additional support supplied: 24 hrs  Other '+f('o','……………')+' Start '+f('s','………………')+'End'+(live?' '+f('e',''):(H.e?' '+esc(H.e):''))+'</p><p>Observations required every 15 minutes during additional support period</p>'}
+var MC=document.createElement('canvas').getContext('2d');
+function fw(i){MC.font='13.333px Arial';i.style.width=Math.max(i.value||!i.placeholder?MC.measureText(i.value).width+6:0,MC.measureText(i.placeholder).width+2,i.placeholder?0:40)+'px'}
+function rowLive(t){var r=S.rows[t]||{},lk=r.saved;
+ return '<tr data-t="'+t+'"><td><div>'+t+'</div><button class="ui rs" data-s="'+t+'"'+(lk?' style="display:none"':'')+'>Save</button>'+(lk?'<div class="ui ok">✓ Saved<button class="ed" data-e="'+t+'">Edit</button></div>':'')+'</td>'+
+ ['a','b','c'].map(function(k){return '<td><textarea data-k="'+k+'"'+(lk?' readonly':'')+'>'+esc(r[k])+'</textarea></td>'}).join('')+'<td class="sg">'+(r.sig?'<img src="'+r.sig+'">':'')+'</td></tr>'}
+function rowStatic(t){var r=S.rows[t]||{};
+ return '<tr><td>'+t+'</td>'+['a','b','c'].map(function(k){return '<td class="v">'+esc(r[k])+'</td>'}).join('')+'<td class="sg">'+(r.sig?'<img src="'+r.sig+'">':'')+'</td></tr>'}
+function render(){
+ var h=hdr(true)+'<table>'+COLS+HEAD+B[0].t.map(rowLive).join('')+'</table>';
+ for(var i=1;i<4;i++){h+='<table>'+COLS+B[i].t.map(rowLive).join('')+'</table>'+bar(i)}
+ document.getElementById('paper').innerHTML=h;
+ document.getElementById('tools').innerHTML='<button class="g" id="pr">Print</button><button id="fd">Save full day PDF &amp; start new chart</button><button class="c" id="cl">Clear all</button>';
+ document.querySelectorAll('.fi').forEach(fw);
+ document.querySelectorAll('#paper textarea').forEach(function(a){grow(a.closest('tr'))});
+}
+function bar(i){return '<div class="bar"><button data-b="'+i+'">Save PDF – '+B[i].n+'</button></div>'}
+function grow(tr){var a=[].slice.call(tr.querySelectorAll('textarea'));a.forEach(function(x){x.style.height='0'});var m=Math.max.apply(null,a.map(function(x){return x.scrollHeight}));a.forEach(function(x){x.style.height=m+'px'})}
+var P=document.getElementById('paper');
+P.addEventListener('input',function(e){var el=e.target;touch();
+ if(el.classList.contains('fi')){S.h[el.dataset.k]=el.value;fw(el)}
+ else if(el.tagName=='TEXTAREA'){var t=el.closest('tr').dataset.t;(S.rows[t]=S.rows[t]||{})[el.dataset.k]=el.value;grow(el.closest('tr'))}
+ save()});
+P.addEventListener('click',function(e){var b=e.target;
+ if(b.dataset.s)sign(b.dataset.s);
+ if(b.dataset.l){touch();S.h.l=S.h.l==b.dataset.l?'':b.dataset.l;save();render()}
+ if(b.dataset.e){var r=S.rows[b.dataset.e];r.saved=false;delete r.sig;save();render()}
+ if(b.dataset.b!=null)pdf([+b.dataset.b],B[+b.dataset.b].n.replace(/[^0-9]/g,'').replace(/(\d{4})(\d{4})/,'$1-$2'));});
+document.getElementById('tools').addEventListener('click',function(e){
+ if(e.target.id=='pr')doPrint();if(e.target.id=='fd')fullDay();
+ if(e.target.id=='cl'&&confirm('Clear the whole chart (all rows, signatures and details)? This cannot be undone.')){S={day:null,h:{},rows:{}};save();render()}});
+// ---------- build sheets (print + PDF) ----------
+var ROOT=document.getElementById('root'),HMAX=930;
+function sheets(idx){ROOT.innerHTML='';var first=true,sh,pg,tb;
+ function ns(withHead){sh=document.createElement('div');sh.className='sheet';pg=document.createElement('div');sh.appendChild(pg);ROOT.appendChild(sh);
+  if(first){pg.innerHTML=hdr(false)}
+  tb=document.createElement('table');tb.innerHTML=COLS;pg.appendChild(tb);
+  if(first){tb.insertAdjacentHTML('beforeend',HEAD);first=false}}
+ idx.forEach(function(i){ns();B[i].t.forEach(function(t){
+  tb.insertAdjacentHTML('beforeend',rowStatic(t));var tr=tb.lastChild;
+  if(pg.offsetHeight>HMAX&&tb.rows.length>1){tb.removeChild(tr);ns();tb.appendChild(tr)}})})}
+function doPrint(){sheets([0,1,2,3]);setTimeout(function(){window.print()},50)}
+window.addEventListener('beforeprint',function(){sheets([0,1,2,3])});
+window.addEventListener('afterprint',function(){ROOT.innerHTML=''});
+function fname(tag){var n=(S.h.n||'chart').replace(/[^\w\- ]+/g,'').trim().replace(/\s+/g,'_')||'chart';return '24h-mood-chart_'+n+'_'+(S.day||today())+'_'+tag+'.pdf'}
+function pdf(idx,tag){
+ if(!window.html2canvas||!window.jspdf){alert('PDF tools could not load. Check the internet connection.');return Promise.resolve()}
+ sheets(idx);var J=new jspdf.jsPDF({unit:'mm',format:'a4',orientation:'portrait'}),els=[].slice.call(ROOT.children);
+ var imgs=[].slice.call(ROOT.querySelectorAll('img')).map(function(i){return i.decode?i.decode().catch(function(){}):0});
+ return Promise.all(imgs).then(function(){return els.reduce(function(p,el,k){return p.then(function(){return html2canvas(el,{scale:2.5,backgroundColor:'#fff'}).then(function(c){if(k)J.addPage();J.addImage(c.toDataURL('image/jpeg',.95),'JPEG',0,0,210,297)})})},Promise.resolve())})
+ .then(function(){J.save(fname(tag));ROOT.innerHTML=''})}
+function fullDay(){return pdf([0,1,2,3],'full-day').then(function(){S={day:null,h:{},rows:{}};save();render();mm.classList.remove('on')})}
+var mm=document.getElementById('mm');
+document.getElementById('ms').onclick=function(){this.disabled=true;fullDay().then(function(){document.getElementById('ms').disabled=false})};
+function chk(){if(S.day&&S.day<today())mm.classList.add('on')}
+setInterval(chk,30000);
+// ---------- signature pad ----------
+var cv=document.getElementById('cv'),cx=cv.getContext('2d'),sm=document.getElementById('sm'),strokes=[],cur=null,dpr=1,curT=null;
+function sign(t){curT=t;document.getElementById('st').textContent=t;sm.classList.add('on');
+ dpr=window.devicePixelRatio||1;var r=cv.getBoundingClientRect();cv.width=r.width*dpr;cv.height=r.height*dpr;strokes=[];redraw()}
+function mid(a,b){return[(a[0]+b[0])/2,(a[1]+b[1])/2]}
+function redraw(){cx.clearRect(0,0,cv.width,cv.height);cx.strokeStyle='#000';cx.fillStyle='#000';cx.lineCap='round';cx.lineJoin='round';
+ strokes.forEach(function(p){var n=p.length;if(n<2){cx.beginPath();cx.arc(p[0][0],p[0][1],1.3*dpr,0,7);cx.fill();return}
+  for(var i=1;i<n;i++){var t=i/(n-1),w=(0.5+3.2*Math.pow(Math.sin(Math.PI*t),.55))*dpr;cx.lineWidth=w;cx.beginPath();
+   var a=i>1?mid(p[i-1],p[i]):p[0],b=i<n-1?mid(p[i],p[i+1]):p[n-1];cx.moveTo(a[0],a[1]);cx.quadraticCurveTo(p[i][0],p[i][1],b[0],b[1]);cx.stroke()}})}
+function pt(e){var r=cv.getBoundingClientRect();return[(e.clientX-r.left)*dpr,(e.clientY-r.top)*dpr]}
+cv.addEventListener('pointerdown',function(e){cv.setPointerCapture(e.pointerId);cur=[pt(e)];strokes.push(cur);redraw()});
+cv.addEventListener('pointermove',function(e){if(!cur)return;var p=pt(e),l=cur[cur.length-1];if(Math.hypot(p[0]-l[0],p[1]-l[1])>1.5*dpr){cur.push(p);redraw()}});
+['pointerup','pointercancel'].forEach(function(n){cv.addEventListener(n,function(){cur=null})});
+document.getElementById('sc').onclick=function(){strokes=[];redraw()};
+document.getElementById('sx').onclick=function(){sm.classList.remove('on')};
+document.getElementById('ss').onclick=function(){
+ var d=cx.getImageData(0,0,cv.width,cv.height).data,x0=1e9,y0=1e9,x1=-1,y1=-1,W=cv.width;
+ for(var i=3;i<d.length;i+=4)if(d[i]>10){var k=(i-3)/4,x=k%W,y=(k/W)|0;if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}
+ if(x1<0){alert('Please sign first.');return}
+ var pd=6*dpr;x0=Math.max(0,x0-pd);y0=Math.max(0,y0-pd);x1=Math.min(W,x1+pd);y1=Math.min(cv.height,y1+pd);
+ var o=document.createElement('canvas');o.width=x1-x0;o.height=y1-y0;o.getContext('2d').drawImage(cv,x0,y0,o.width,o.height,0,0,o.width,o.height);
+ touch();var r=S.rows[curT]=S.rows[curT]||{};
+ var tr=P.querySelector('tr[data-t="'+curT+'"]');['a','b','c'].forEach(function(k){r[k]=tr.querySelector('[data-k="'+k+'"]').value});
+ r.sig=o.toDataURL('image/png');r.saved=true;r.at=new Date().toISOString();save();sm.classList.remove('on');render()};
+function fit(){var w=innerWidth,z=w<820?w/820:1;document.getElementById('app').style.zoom=z}
+addEventListener('resize',fit);fit();render();chk();
+})();
+</script></body></html>
